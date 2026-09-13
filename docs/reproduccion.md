@@ -1,5 +1,7 @@
 # Reproducir el estudio
 
+Para una prueba guiada en Google Colab, usar [el cuaderno y las instrucciones de Colab](colab.md). Esa copia verifica el experimento guardado sin iniciar entrenamientos por falta de archivos.
+
 Todos los comandos se ejecutan desde la raíz de `habitia-tfm`, con Python 3.12. El entorno histórico registró Python 3.12.14; las dependencias directas están fijadas en `requirements_revision.txt`. La instalación de entrega se comprueba con Python 3.12.12. `entorno_revision.lock.txt` es el inventario histórico, con paquetes específicos de macOS, y no sustituye la receta portable.
 
 ## Preparación

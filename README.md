@@ -10,6 +10,7 @@ Trabajo Fin de Máster de Big Data, Data Science e Inteligencia Artificial, Univ
 
 - **Leer el estudio:** memoria, anexos, presentación y HTML del notebook en la [entrega versionada](https://github.com/maupeon/habitia-tfm/releases/tag/tfm-2026-09-13).
 - **Ver el código y las salidas:** [notebook ejecutado](TFM_HabitIA_entrenamiento.ipynb).
+- **Probar en Google Colab:** [cuaderno preparado](colab/HabitIA_Colab.ipynb) y [pasos de ejecución](docs/colab.md); requiere el ZIP privado de datos y código facilitado por el equipo.
 - **Arrancar el modelo:** seguir el apartado 4 y [el contrato HTTP](servicio/README.md).
 - **Repetir el estudio:** [guía de reproducción](docs/reproduccion.md), con el fichero de entrada custodiado por el equipo.
 - **Aplicación web:** [repositorio independiente](https://github.com/maupeon/agente-inmobiliario) · [demo](https://habitiaucm.vercel.app) · [presentación interactiva](https://habitiaucm.vercel.app/presentacion).
