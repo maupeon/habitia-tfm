@@ -12,7 +12,7 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError
 from .predictor import PredictorHabitia, RUTA_PAQUETE
 
 MODEL_ID = "habitIA-xgboost-2018-v3"
-MODEL_VERSION = "3.0.0"
+MODEL_VERSION = "3.1.0"
 MANIFEST = Path(__file__).resolve().parents[1] / "servicio" / "manifiesto_v3.json"
 WARNINGS = [
     "Estimación de precio anunciado con datos de 2018, indexada a 2025. Precisión actual no validada.",
@@ -70,6 +70,7 @@ class RuntimePredictor:
 
     def health(self):
         return {"ok": True, "model_id": MODEL_ID, "model_version": MODEL_VERSION,
+                "operaciones": ["sale", "rent"],
                 "variables": len(self.predictor.columnas), "nivel_precios": "2025",
                 "ano_base": 2018, "ano_precio": 2025, "ano_renta": 2024,
                 "objetivo": "precio_anunciado", "precision_actual_validada": False,
@@ -86,8 +87,8 @@ class RuntimePredictor:
             return None, ("datos_insuficientes", "Revisa los campos requeridos y sus tipos: " + ", ".join(fields))
         subtype = a.detailedType.subTypology if a.detailedType else None
         typology = a.detailedType.typology if a.detailedType else None
-        if a.operation != "sale" or a.municipality.strip().casefold() != "madrid":
-            return None, ("fuera_ambito", "El modelo estima viviendas de venta en Madrid capital.")
+        if a.municipality.strip().casefold() != "madrid":
+            return None, ("fuera_ambito", "El modelo admite viviendas de compra o alquiler en Madrid capital.")
         if (a.propertyType not in {"flat", "penthouse", "duplex", "studio"}
                 and not (a.propertyType == "homes" and typology == "flat")) or subtype in {
                     "independantHouse", "semidetachedHouse", "terracedHouse"}:
@@ -140,6 +141,11 @@ class RuntimePredictor:
             if explicar:
                 warnings.append("Este paquete no exporta explicaciones SHAP por anuncio.")
             announced = data.get("price")
+            comparison = row["renta_mensual_estimada"] if data["operation"] == "rent" else price
+            if not isinstance(comparison, (int, float)) or not math.isfinite(comparison) or comparison <= 0:
+                errors.append({"indice": i, "propertyCode": data["propertyCode"], "estado": "no_disponible",
+                               "detalle": "No se pudo obtener una referencia válida para esta operación."})
+                continue
             results.append({
                 "propertyCode": data["propertyCode"], "estado": "ok", "model_id": MODEL_ID,
                 "model_version": MODEL_VERSION, "modelo": self.meta["nombre"],
@@ -150,7 +156,9 @@ class RuntimePredictor:
                 "ano_base": 2018, "ano_precio": 2025, "ano_renta": 2024,
                 "factor_escenario": row["indice_venta"], "precio_estimado_base": row["precio_estimado_base"],
                 "precio_estimado": price, "precio_anunciado": announced,
-                "brecha_pct": (announced / price - 1) * 100 if announced else None,
+                "operation": data["operation"], "precio_comparacion": comparison,
+                "unidad_comparacion": "EUR/mes" if data["operation"] == "rent" else "EUR",
+                "brecha_pct": (announced / comparison - 1) * 100 if announced else None,
                 "intervalo": None, "banda": None, "oportunidad": False, "sobrevalorado": False,
                 "barrio_code": row["barrio_code"], "distrito_code": row["distrito_code"],
                 "renta_mensual_estimada": row["renta_mensual_estimada"],

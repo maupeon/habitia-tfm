@@ -4,7 +4,7 @@ Evaluación retrospectiva de **precios anunciados de vivienda en Madrid (2018)**
 
 Trabajo Fin de Máster de Big Data, Data Science e Inteligencia Artificial, Universidad Complutense de Madrid, curso 2025–2026.
 
-**Integración del 13 de septiembre:** el producto incorpora `habitIA-xgboost-2018-v3`, con 21 variables y precio de venta indexado a 2025. [Instalación y contrato v3](servicio/README_v3.md). Sus métricas son declaradas por el paquete recibido; el estudio LightGBM descrito a continuación y su notebook se conservan como evidencia histórica independiente.
+**Integración del 13 de septiembre:** el producto incorpora `habitIA-xgboost-2018-v3`, con 21 variables y precio de venta indexado a 2025. El contrato 3.1.0 admite compra y alquiler: compara importes totales o mensualidades en €/mes, respectivamente. La renta deriva de ratios distritales de 2024 y no dispone de validación independiente. [Instalación y contrato v3](servicio/README_v3.md). Sus métricas son declaradas por el paquete recibido; el estudio LightGBM descrito a continuación y su notebook se conservan como evidencia histórica independiente.
 
 **Equipo:** Mauricio Peón García · João Paulo Nogueira Cunha · Manuel Macedo Púlido · Aldo Mauricio Ress Villets · Tomás Perales Lara. **Tutores:** Carlos Ortega y Santiago Mota.
 

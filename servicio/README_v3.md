@@ -36,9 +36,11 @@ POST `/valorar`, con `Authorization: Bearer <token>`:
 }
 ```
 
-Máximo 24 anuncios, con tipos estrictos. Se aceptan flat, penthouse, duplex y studio, además de homes con detailedType.typology=flat. Se excluyen subtipos de casa, otros municipios, coordenadas inválidas y superficies superiores a 367 m². El barrio se asigna con la capa incluida y permite rescate hasta 500 m, identificado con una advertencia.
+Máximo 24 anuncios, con tipos estrictos. Se aceptan operaciones `sale` y `rent`, incluso en el mismo lote. Para alquiler, `price` es la mensualidad en euros. Se aceptan flat, penthouse, duplex y studio, además de homes con detailedType.typology=flat. Se excluyen subtipos de casa, otros municipios, coordenadas inválidas y superficies superiores a 367 m². El barrio se asigna con la capa incluida y permite rescate hasta 500 m, identificado con una advertencia.
 
-Cada fila se valida antes del cálculo geográfico. El precio anunciado no entra en las variables y puede omitirse; en ese caso la brecha es null. La respuesta identifica `habitIA-xgboost-2018-v3`, versión `3.0.0`, periodos, códigos territoriales y advertencias, junto con `precio_estimado`, `precio_estimado_base`, `factor_escenario`, `precio_anunciado` y `brecha_pct`.
+Cada fila se valida antes del cálculo geográfico. El precio anunciado no entra en las variables y puede omitirse; en ese caso la brecha es null. La respuesta identifica `habitIA-xgboost-2018-v3`, versión `3.1.0`, periodos, códigos territoriales y advertencias, junto con `precio_estimado`, `precio_estimado_base`, `factor_escenario`, `precio_anunciado` y `brecha_pct`.
+
+`operation` conserva la operación observada. `precio_estimado` siempre contiene el valor de venta indexado; `precio_comparacion` toma ese valor para venta (`unidad_comparacion=EUR`) y `renta_mensual_estimada` para alquiler (`unidad_comparacion=EUR/mes`). `brecha_pct` compara el anuncio con la magnitud correspondiente. El contrato 3.1 añade estos campos sin cambiar los pesos.
 
 `intervalo` y `banda` son null, `oportunidad` y `sobrevalorado` son false y no hay SHAP exportado. `explicar=true` añade una advertencia. La renta usa `metodo_renta=ratio_distrital_2024` y `alquiler_validado=false`. No se vuelve a aplicar el factor de indexación de v2 ni se utiliza la renta automáticamente en la calculadora.
 
@@ -55,6 +57,6 @@ docker build -f servicio/Dockerfile.v3 -t habitia-valoracion:v3 .
 docker run --rm -p 8000:8000 -e VALORACION_TOKEN habitia-valoracion:v3
 ```
 
-`docs/verificacion-paridad-v3.json` registra 131 anuncios sintéticos con igualdad exacta de precio respecto al paquete original. Las pruebas verifican autenticación, lotes mixtos, errores, dominios y ausencia del precio anunciado entre los predictores. No recalculan métricas de test.
+`docs/verificacion-paridad-v3.json` registra 131 anuncios sintéticos con igualdad exacta de precio respecto al paquete original. Las pruebas verifican autenticación, lotes mixtos de venta y alquiler, comparación de mensualidades, errores, dominios y ausencia del precio anunciado entre los predictores. No recalculan métricas de test.
 
 La web debe admitir v3 antes de activar la imagen nueva de Fly. La URL y el token se conservan. Para reconstruir v2 se mantienen su Dockerfile, API, contrato y distribución de pesos. El 9,29 % de error mediano declarado por XGBoost no es comparable directamente con el 10,31 % del estudio agrupado LightGBM sin una reserva y protocolo comunes.

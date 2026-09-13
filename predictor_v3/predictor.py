@@ -13,7 +13,7 @@ Dos pasos:
    a una fila por anuncio con precio estimado, renta mensual y marcas de calidad.
 
 Un anuncio no se predice (precio NaN, `valido` False y `motivo_no_valido`) si le falta
-superficie, habitaciones, baños o coordenadas, si no es de venta, si cae fuera de Madrid
+superficie, habitaciones, baños o coordenadas, si no es de venta o alquiler, si cae fuera de Madrid
 ciudad, si es un chalet o casa (el modelo no ve la parcela) o si su superficie supera el
 percentil 99 de train (`produccion.motivos_fuera_de_dominio`). El resto se predice aunque tenga advertencias (`fuera_de_rango`, planta imputada,
 ascensor desde la descripción...): quien consume decide qué filtrar.
@@ -158,7 +158,7 @@ o desde Python, con esta carpeta en el `PYTHONPATH`:
 - `renta_mensual_estimada`: precio estimado × relación renta/precio del distrito en {m['ano_renta']}.
 - `anunciado_sobre_estimado`: precio anunciado / precio estimado.
 - `valido` y `motivo_no_valido`: no se valora un anuncio sin superficie, habitaciones, baños
-  o coordenadas, que no sea de venta, fuera de Madrid ciudad, chalet o casa, o de más de
+  o coordenadas, que no sea de venta o alquiler, fuera de Madrid ciudad, chalet o casa, o de más de
   {m['area_max_dominio']:.0f} m².
 - Advertencias (el anuncio se valora igual): `fuera_de_rango`, `planta_imputada`,
   `ascensor_desde_descripcion`, `sin_descripcion`, `barrio_rescatado`.
@@ -272,7 +272,7 @@ class PredictorHabitia:
         sin_coordenadas = ~np.isfinite(lat) | ~np.isfinite(lon) | lat.abs().gt(90) | lon.abs().gt(180)
 
         problemas = pd.DataFrame({
-            "operacion_no_venta": df["operation"].ne("sale").fillna(True),
+            "operacion_no_admitida": ~df["operation"].isin(["sale", "rent"]),
             "sin_coordenadas": sin_coordenadas,
             "fuera_de_madrid": contexto["sin_barrio"] & ~sin_coordenadas,
             **{motivo: ~np.isfinite(X[columna]) | (X[columna] < 0) for columna, motivo in OBLIGATORIAS.items()},
@@ -303,7 +303,10 @@ class PredictorHabitia:
             "factor_renta_mensual": ajuste["factor_renta_mensual"],
             "renta_mensual_estimada": ajuste["renta_mensual_estimada"],
         })
-        salida["anunciado_sobre_estimado"] = salida["precio_anunciado"] / salida["precio_estimado"]
+        # El modelo estima venta; para alquiler se compara la mensualidad con
+        # la renta derivada por el paquete, nunca con el valor total de venta.
+        referencia = salida["precio_estimado"].where(df["operation"].eq("sale"), salida["renta_mensual_estimada"])
+        salida["anunciado_sobre_estimado"] = salida["precio_anunciado"] / referencia
         estimaciones = ["precio_estimado_base", "indice_venta", "precio_estimado", "factor_renta_mensual",
                         "renta_mensual_estimada", "anunciado_sobre_estimado"]
         salida.loc[~valido, estimaciones] = np.nan

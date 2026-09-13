@@ -19,7 +19,7 @@ class ValidationTests(unittest.TestCase):
         for changes in ({"latitude": None}, {"latitude": float("nan")}, {"latitude": 91},
                         {"hasLift": "false"}, {"rooms": 2.5}, {"size": float("inf")},
                         {"propertyType": "office"}, {"propertyType": "chalet"}, {"size": 368},
-                        {"operation": "rent"}, {"municipality": "Barcelona"}, {"bathrooms": None}):
+                        {"operation": "unknown"}, {"municipality": "Barcelona"}, {"bathrooms": None}):
             with self.subTest(changes=changes):
                 _, error = RuntimePredictor.validate({**BASE, **changes})
                 self.assertIsNotNone(error)
@@ -29,6 +29,7 @@ class ValidationTests(unittest.TestCase):
         row, error = RuntimePredictor.validate(BASE)
         self.assertIsNone(error)
         self.assertEqual(row["description"], BASE["description"])
+        self.assertIsNone(RuntimePredictor.validate({**BASE, "operation": "rent", "price": 1500})[1])
 
 @unittest.skipUnless(RUTA_PAQUETE.exists(), "Instala los artefactos v3 para las pruebas de integración")
 class IntegrationTests(unittest.TestCase):
@@ -58,6 +59,29 @@ class IntegrationTests(unittest.TestCase):
         self.assertIsNone(result[2]["brecha_pct"])
         self.assertAlmostEqual(result[0]["precio_estimado"], 532534.0692388825, places=3)
 
+    def test_rental_compares_monthly_amounts_and_preserves_sale_estimate(self):
+        rental = {**BASE, "propertyCode": "rent", "operation": "rent", "price": 1500}
+        result, errors = self.runtime.valorar([BASE, rental, {**rental, "propertyCode": "high-rent", "price": 2500},
+                                             {**rental, "propertyCode": "no-rent", "price": None}])
+        self.assertEqual(errors, [])
+        sale, rent, high, missing = result
+        self.assertEqual(sale["precio_comparacion"], sale["precio_estimado"])
+        self.assertEqual(sale["unidad_comparacion"], "EUR")
+        self.assertEqual(rent["operation"], "rent")
+        self.assertEqual(rent["unidad_comparacion"], "EUR/mes")
+        self.assertEqual(len({r["precio_estimado"] for r in result}), 1)
+        self.assertEqual(rent["precio_comparacion"], rent["renta_mensual_estimada"])
+        self.assertAlmostEqual(rent["precio_comparacion"], 1505.2798707364, places=5)
+        self.assertAlmostEqual(rent["brecha_pct"], (1500 / rent["renta_mensual_estimada"] - 1) * 100)
+        self.assertGreater(high["brecha_pct"], 60)
+        self.assertIsNone(missing["brecha_pct"])
+        self.assertIsNone(rent["intervalo"])
+        self.assertIsNone(rent["banda"])
+        self.assertFalse(rent["alquiler_validado"])
+        native = self.runtime.predictor.predecir([rental]).iloc[0]
+        self.assertTrue(native.valido)
+        self.assertAlmostEqual(native.anunciado_sobre_estimado, 1500 / native.renta_mensual_estimada)
+
     def test_input_evidence_and_domains(self):
         for key, changes in {
             "no-description": {"description": None, "parkingSpace": None},
@@ -76,13 +100,17 @@ class IntegrationTests(unittest.TestCase):
         from fastapi.testclient import TestClient
         from servicio.api_v3 import app
         with patch.dict(os.environ, {"VALORACION_TOKEN": "synthetic-test-token"}), TestClient(app) as client:
-            self.assertEqual(client.get("/salud").json()["model_version"], "3.0.0")
+            self.assertEqual(client.get("/salud").json()["model_version"], "3.1.0")
+            self.assertEqual(client.get("/salud").json()["operaciones"], ["sale", "rent"])
             self.assertEqual(client.post("/valorar", json={"anuncios": [BASE]}).status_code, 401)
             headers = {"Authorization": "Bearer synthetic-test-token"}
             response = client.post("/valorar", json={"anuncios": [BASE], "explicar": True}, headers=headers)
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response.json()["resultados"][0]["propertyCode"], BASE["propertyCode"])
             self.assertNotIn("explicacion", response.json()["resultados"][0])
+            rental = client.post("/valorar", json={"anuncios": [BASE, {**BASE, "propertyCode": "rental-http", "operation": "rent", "price": 1500}]}, headers=headers)
+            self.assertEqual(rental.status_code, 200)
+            self.assertEqual([r["unidad_comparacion"] for r in rental.json()["resultados"]], ["EUR", "EUR/mes"])
             for rows in ([], [BASE] * 25):
                 self.assertEqual(client.post("/valorar", json={"anuncios": rows}, headers=headers).status_code, 422)
             bad = client.post("/valorar", json={"anuncios": [{**BASE, "latitude": None}]}, headers=headers)
