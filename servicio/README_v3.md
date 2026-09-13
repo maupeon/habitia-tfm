@@ -46,6 +46,8 @@ Un lote válido como petición devuelve 200 con `resultados` y `errores`, inclus
 
 ## Pruebas y despliegue
 
+Fly utiliza una máquina compartida de 1 GB y 60 segundos de margen para el arranque. La carga de XGBoost agotó los 512 MB de la configuración anterior; se amplió la memoria sin cambiar los pesos.
+
 ```bash
 python -m pip install httpx
 python -m unittest discover -s tests_v3 -v
