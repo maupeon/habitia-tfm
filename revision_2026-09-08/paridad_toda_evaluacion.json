@@ -1,0 +1,28 @@
+{
+  "estado": "aprobado",
+  "observaciones": 18782,
+  "activos_evaluados": 15031,
+  "comparaciones": {
+    "precio_estimado": {
+      "n": 18782,
+      "max_diferencia_eur": 0.49995920312358066,
+      "igual_a_redondeo": true
+    },
+    "limite_inferior": {
+      "n": 18782,
+      "max_diferencia_eur": 0.4999901490518823,
+      "igual_a_redondeo": true
+    },
+    "limite_superior": {
+      "n": 18782,
+      "max_diferencia_eur": 0.4999628026271239,
+      "igual_a_redondeo": true
+    }
+  },
+  "separacion_activos_fit_cal_evaluacion": true,
+  "salida_por_defecto_2018": true,
+  "puntos_dentro_intervalo": true,
+  "duracion_segundos": 4.795,
+  "sha256_valorador": "bffdbadcec52287d91076d1763346975c75aac12e1430ff3e0d1f8afa7dc778a",
+  "sha256_manifiesto": "36bbb047bad0300440f9361ab1ee0c6bc0a7be405d3f0510d36217172ac7a606"
+}

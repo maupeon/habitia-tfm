@@ -1,0 +1,46 @@
+{
+  "version": "habitIA-oferta-2018-v2",
+  "seed": 17,
+  "outer_folds": 3,
+  "inner_folds": 3,
+  "calibration_fraction": 0.2,
+  "alpha": 0.1,
+  "trees": 600,
+  "learning_rate": 0.05,
+  "n_jobs": 2,
+  "lightgbm_candidates": [
+    {
+      "num_leaves": 15,
+      "min_child_samples": 30
+    },
+    {
+      "num_leaves": 15,
+      "min_child_samples": 100
+    },
+    {
+      "num_leaves": 31,
+      "min_child_samples": 30
+    },
+    {
+      "num_leaves": 31,
+      "min_child_samples": 100
+    },
+    {
+      "num_leaves": 63,
+      "min_child_samples": 30
+    },
+    {
+      "num_leaves": 63,
+      "min_child_samples": 100
+    }
+  ],
+  "ridge_alphas": [
+    1.0,
+    10.0,
+    100.0
+  ],
+  "selection_metric": "MdAPE_pct por observación; pesos iguales por activo al ajustar",
+  "calibration_unit": "máximo residual conformal por ASSETID",
+  "historical_data_already_explored": true,
+  "support_distance_km": 1.0
+}

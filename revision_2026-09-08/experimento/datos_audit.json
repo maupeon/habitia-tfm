@@ -1,0 +1,781 @@
+{
+  "schema_version": "revision_data/1.0",
+  "dataset": {
+    "path": "data/habitia_madrid_2018.parquet",
+    "sha256": "7c20dce686fb415430660167f092eb3e0ab44dae2e1221bc3db61fd94d3600ca",
+    "bytes": 10969510,
+    "rows_input": 94852,
+    "columns_input": [
+      "ASSETID",
+      "PERIOD",
+      "PRICE",
+      "UNITPRICE",
+      "CONSTRUCTEDAREA",
+      "ROOMNUMBER",
+      "BATHNUMBER",
+      "HASTERRACE",
+      "HASLIFT",
+      "HASAIRCONDITIONING",
+      "AMENITYID",
+      "HASPARKINGSPACE",
+      "ISPARKINGSPACEINCLUDEDINPRICE",
+      "PARKINGSPACEPRICE",
+      "HASNORTHORIENTATION",
+      "HASSOUTHORIENTATION",
+      "HASEASTORIENTATION",
+      "HASWESTORIENTATION",
+      "HASBOXROOM",
+      "HASWARDROBE",
+      "HASSWIMMINGPOOL",
+      "HASDOORMAN",
+      "HASGARDEN",
+      "ISDUPLEX",
+      "ISSTUDIO",
+      "ISINTOPFLOOR",
+      "CONSTRUCTIONYEAR",
+      "FLOORCLEAN",
+      "FLATLOCATIONID",
+      "CADCONSTRUCTIONYEAR",
+      "CADMAXBUILDINGFLOOR",
+      "CADDWELLINGCOUNT",
+      "CADASTRALQUALITYID",
+      "BUILTTYPEID_1",
+      "BUILTTYPEID_2",
+      "BUILTTYPEID_3",
+      "DISTANCE_TO_CITY_CENTER",
+      "DISTANCE_TO_METRO",
+      "DISTANCE_TO_CASTELLANA",
+      "LONGITUDE",
+      "LATITUDE",
+      "geometry",
+      "codigo_censal",
+      "seccion_rescatada",
+      "sec_dist_borde_m",
+      "sec_dudosa",
+      "barrio",
+      "distrito",
+      "n_viviendas_alquiler",
+      "alq_mediana_m2",
+      "alq_p25_m2",
+      "alq_p75_m2",
+      "alq_mediana_eur_m2",
+      "alq_p25_eur_m2",
+      "alq_p75_eur_m2",
+      "alq_mediana_eur",
+      "alq_p25_eur",
+      "alq_p75_eur",
+      "alq_nivel_imputacion",
+      "alq_imputado",
+      "alquiler_estimado_eur",
+      "rentabilidad_pct"
+    ],
+    "original_columns": [
+      "ASSETID",
+      "PERIOD",
+      "PRICE",
+      "UNITPRICE",
+      "CONSTRUCTEDAREA",
+      "ROOMNUMBER",
+      "BATHNUMBER",
+      "HASTERRACE",
+      "HASLIFT",
+      "HASAIRCONDITIONING",
+      "AMENITYID",
+      "HASPARKINGSPACE",
+      "ISPARKINGSPACEINCLUDEDINPRICE",
+      "PARKINGSPACEPRICE",
+      "HASNORTHORIENTATION",
+      "HASSOUTHORIENTATION",
+      "HASEASTORIENTATION",
+      "HASWESTORIENTATION",
+      "HASBOXROOM",
+      "HASWARDROBE",
+      "HASSWIMMINGPOOL",
+      "HASDOORMAN",
+      "HASGARDEN",
+      "ISDUPLEX",
+      "ISSTUDIO",
+      "ISINTOPFLOOR",
+      "CONSTRUCTIONYEAR",
+      "FLOORCLEAN",
+      "FLATLOCATIONID",
+      "CADCONSTRUCTIONYEAR",
+      "CADMAXBUILDINGFLOOR",
+      "CADDWELLINGCOUNT",
+      "CADASTRALQUALITYID",
+      "BUILTTYPEID_1",
+      "BUILTTYPEID_2",
+      "BUILTTYPEID_3",
+      "DISTANCE_TO_CITY_CENTER",
+      "DISTANCE_TO_METRO",
+      "DISTANCE_TO_CASTELLANA",
+      "LONGITUDE",
+      "LATITUDE"
+    ],
+    "returned_columns": [
+      "ASSETID",
+      "PERIOD",
+      "PRICE",
+      "UNITPRICE",
+      "CONSTRUCTEDAREA",
+      "ROOMNUMBER",
+      "BATHNUMBER",
+      "HASTERRACE",
+      "HASLIFT",
+      "HASAIRCONDITIONING",
+      "AMENITYID",
+      "HASPARKINGSPACE",
+      "ISPARKINGSPACEINCLUDEDINPRICE",
+      "PARKINGSPACEPRICE",
+      "HASNORTHORIENTATION",
+      "HASSOUTHORIENTATION",
+      "HASEASTORIENTATION",
+      "HASWESTORIENTATION",
+      "HASBOXROOM",
+      "HASWARDROBE",
+      "HASSWIMMINGPOOL",
+      "HASDOORMAN",
+      "HASGARDEN",
+      "ISDUPLEX",
+      "ISSTUDIO",
+      "ISINTOPFLOOR",
+      "CONSTRUCTIONYEAR",
+      "FLOORCLEAN",
+      "FLATLOCATIONID",
+      "CADCONSTRUCTIONYEAR",
+      "CADMAXBUILDINGFLOOR",
+      "CADDWELLINGCOUNT",
+      "CADASTRALQUALITYID",
+      "BUILTTYPEID_1",
+      "BUILTTYPEID_2",
+      "BUILTTYPEID_3",
+      "DISTANCE_TO_CITY_CENTER",
+      "DISTANCE_TO_METRO",
+      "DISTANCE_TO_CASTELLANA",
+      "LONGITUDE",
+      "LATITUDE",
+      "codigo_censal",
+      "barrio",
+      "distrito",
+      "seccion_rescatada",
+      "sec_dist_borde_m",
+      "sec_dudosa",
+      "source_row_id"
+    ],
+    "excluded_extra_columns": [
+      "geometry",
+      "n_viviendas_alquiler",
+      "alq_mediana_m2",
+      "alq_p25_m2",
+      "alq_p75_m2",
+      "alq_mediana_eur_m2",
+      "alq_p25_eur_m2",
+      "alq_p75_eur_m2",
+      "alq_mediana_eur",
+      "alq_p25_eur",
+      "alq_p75_eur",
+      "alq_nivel_imputacion",
+      "alq_imputado",
+      "alquiler_estimado_eur",
+      "rentabilidad_pct"
+    ]
+  },
+  "deduplication": {
+    "key_columns": [
+      "ASSETID",
+      "PERIOD",
+      "PRICE",
+      "UNITPRICE",
+      "CONSTRUCTEDAREA",
+      "ROOMNUMBER",
+      "BATHNUMBER",
+      "HASTERRACE",
+      "HASLIFT",
+      "HASAIRCONDITIONING",
+      "AMENITYID",
+      "HASPARKINGSPACE",
+      "ISPARKINGSPACEINCLUDEDINPRICE",
+      "PARKINGSPACEPRICE",
+      "HASNORTHORIENTATION",
+      "HASSOUTHORIENTATION",
+      "HASEASTORIENTATION",
+      "HASWESTORIENTATION",
+      "HASBOXROOM",
+      "HASWARDROBE",
+      "HASSWIMMINGPOOL",
+      "HASDOORMAN",
+      "HASGARDEN",
+      "ISDUPLEX",
+      "ISSTUDIO",
+      "ISINTOPFLOOR",
+      "CONSTRUCTIONYEAR",
+      "FLOORCLEAN",
+      "FLATLOCATIONID",
+      "CADCONSTRUCTIONYEAR",
+      "CADMAXBUILDINGFLOOR",
+      "CADDWELLINGCOUNT",
+      "CADASTRALQUALITYID",
+      "BUILTTYPEID_1",
+      "BUILTTYPEID_2",
+      "BUILTTYPEID_3",
+      "DISTANCE_TO_CITY_CENTER",
+      "DISTANCE_TO_METRO",
+      "DISTANCE_TO_CASTELLANA",
+      "LONGITUDE",
+      "LATITUDE"
+    ],
+    "groups_merged": 37,
+    "rows_removed": 37,
+    "merged_rows": [
+      {
+        "kept_source_row_id": 1851,
+        "removed_source_row_ids": [
+          1852
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 1853,
+        "removed_source_row_ids": [
+          1854
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 1912,
+        "removed_source_row_ids": [
+          1913
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 1922,
+        "removed_source_row_ids": [
+          1923
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 21597,
+        "removed_source_row_ids": [
+          21598
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 21648,
+        "removed_source_row_ids": [
+          21649
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 21653,
+        "removed_source_row_ids": [
+          21654
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 21658,
+        "removed_source_row_ids": [
+          21659
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 21696,
+        "removed_source_row_ids": [
+          21697
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 37641,
+        "removed_source_row_ids": [
+          37642
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 37672,
+        "removed_source_row_ids": [
+          37673
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 37676,
+        "removed_source_row_ids": [
+          37677
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 37696,
+        "removed_source_row_ids": [
+          37697
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 37717,
+        "removed_source_row_ids": [
+          37718
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 39871,
+        "removed_source_row_ids": [
+          39872
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 39887,
+        "removed_source_row_ids": [
+          39888
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 39916,
+        "removed_source_row_ids": [
+          39917
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 39924,
+        "removed_source_row_ids": [
+          39925
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 39933,
+        "removed_source_row_ids": [
+          39934
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 39985,
+        "removed_source_row_ids": [
+          39986
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 40019,
+        "removed_source_row_ids": [
+          40020
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 40215,
+        "removed_source_row_ids": [
+          40216
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 40226,
+        "removed_source_row_ids": [
+          40227
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 40242,
+        "removed_source_row_ids": [
+          40243
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 40253,
+        "removed_source_row_ids": [
+          40254
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 40271,
+        "removed_source_row_ids": [
+          40272
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 42630,
+        "removed_source_row_ids": [
+          42631
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 42695,
+        "removed_source_row_ids": [
+          42696
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 68518,
+        "removed_source_row_ids": [
+          68519
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 68543,
+        "removed_source_row_ids": [
+          68544
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 68570,
+        "removed_source_row_ids": [
+          68571
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 68582,
+        "removed_source_row_ids": [
+          68583
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 68589,
+        "removed_source_row_ids": [
+          68590
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 68616,
+        "removed_source_row_ids": [
+          68617
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 68620,
+        "removed_source_row_ids": [
+          68621
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 92103,
+        "removed_source_row_ids": [
+          92104
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      },
+      {
+        "kept_source_row_id": 92535,
+        "removed_source_row_ids": [
+          92536
+        ],
+        "conflicting_extra_columns": [
+          "n_viviendas_alquiler",
+          "alq_nivel_imputacion",
+          "alq_imputado"
+        ]
+      }
+    ],
+    "conflicting_extra_columns": {
+      "n_viviendas_alquiler": 37,
+      "alq_nivel_imputacion": 37,
+      "alq_imputado": 37
+    },
+    "territorial_conflict_policy": "set_missing_and_audit"
+  },
+  "after_deduplication": {
+    "rows": 94815,
+    "assets": 75804,
+    "assets_with_multiple_rows": 13829,
+    "assets_in_multiple_periods": 0,
+    "period_counts": {
+      "201803": 21920,
+      "201806": 12652,
+      "201809": 15973,
+      "201812": 44270
+    }
+  },
+  "exclusions": [
+    {
+      "reason": "invalid_assetid",
+      "rows_removed": 0,
+      "source_row_ids": [],
+      "rows_remaining": 94815
+    },
+    {
+      "reason": "invalid_price",
+      "rows_removed": 0,
+      "source_row_ids": [],
+      "rows_remaining": 94815
+    },
+    {
+      "reason": "area_outside_20_1000",
+      "rows_removed": 0,
+      "source_row_ids": [],
+      "rows_remaining": 94815
+    },
+    {
+      "reason": "coordinates_outside_madrid_bbox",
+      "rows_removed": 1,
+      "source_row_ids": [
+        84035
+      ],
+      "rows_remaining": 94814
+    },
+    {
+      "reason": "rooms_outside_0_12",
+      "rows_removed": 22,
+      "source_row_ids": [
+        544,
+        1511,
+        9646,
+        11075,
+        11110,
+        13081,
+        17642,
+        18793,
+        18996,
+        19021,
+        25857,
+        34088,
+        37148,
+        48366,
+        53186,
+        56192,
+        56831,
+        60461,
+        63994,
+        66907,
+        68926,
+        84094
+      ],
+      "rows_remaining": 94792
+    },
+    {
+      "reason": "bathrooms_outside_0_10",
+      "rows_removed": 14,
+      "source_row_ids": [
+        1084,
+        1137,
+        1188,
+        1232,
+        4473,
+        9630,
+        9925,
+        21450,
+        34922,
+        37528,
+        39206,
+        40095,
+        41126,
+        45363
+      ],
+      "rows_remaining": 94778
+    },
+    {
+      "reason": "floor_outside_minus2_40",
+      "rows_removed": 0,
+      "source_row_ids": [],
+      "rows_remaining": 94778
+    }
+  ],
+  "temporal_provenance": {
+    "PERIOD": "trimestre de extracción del anuncio; no fecha exacta ni transacción",
+    "rental_reference_date": "unverified; rental columns excluded",
+    "cadastral_as_of_2018": "unverified; exclude from principal temporal model",
+    "cadastral_columns": [
+      "CADCONSTRUCTIONYEAR",
+      "CADMAXBUILDINGFLOOR",
+      "CADDWELLINGCOUNT",
+      "CADASTRALQUALITYID"
+    ],
+    "territorial_layer_date": "unverified; retained for diagnostics",
+    "coordinates": "masked; source preserves neighborhood, not census section",
+    "property_type": "not recorded; ISINTOPFLOOR is top-floor flag, not penthouse type"
+  },
+  "target_policy": "finite PRICE > 0; no price quantiles or target-dependent trimming",
+  "missing_policy": "no imputation; rooms, bathrooms and floor may be missing",
+  "output": {
+    "rows": 94778,
+    "assets": 75771,
+    "assets_with_multiple_rows": 13826,
+    "assets_in_multiple_periods": 0,
+    "period_counts": {
+      "201803": 21909,
+      "201806": 12646,
+      "201809": 15970,
+      "201812": 44253
+    }
+  },
+  "rows_excluded_by_validation": 37,
+  "exclusiones_contrato_compartido": {
+    "Sin adscripción territorial histórica.": 752
+  },
+  "filas_elegibles_pipeline": 94026,
+  "activos_elegibles_pipeline": 75225,
+  "periodos_elegibles": {
+    "201803": 21741,
+    "201806": 12541,
+    "201809": 15845,
+    "201812": 43899
+  }
+}

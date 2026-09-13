@@ -1,0 +1,39 @@
+# fly.toml app configuration file generated for habitia-valoracion on 2026-08-31T13:43:44+02:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'habitia-valoracion'
+# Región actual del servicio: París.
+primary_region = 'cdg'
+
+[build]
+  dockerfile = 'servicio/Dockerfile'
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  # Mantener una máquina preparada evita arranques en frío durante la demo.
+  min_machines_running = 1
+
+  [http_service.concurrency]
+    type = 'requests'
+    hard_limit = 40
+    soft_limit = 20
+
+  [[http_service.checks]]
+    interval = '30s'
+    timeout = '5s'
+    grace_period = '15s'
+    method = 'GET'
+    path = '/salud'
+
+# Memoria asignada para inferencia; verificar el consumo tras cada modelo nuevo.
+[[vm]]
+  size = 'shared-cpu-1x'
+  memory = '512mb'
+  cpu_kind = 'shared'
+  cpus = 1
+  memory_mb = 512

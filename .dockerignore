@@ -1,0 +1,13 @@
+**
+!src/
+!src/model_pipeline.py
+!src/valorador.py
+!servicio/
+!servicio/api.py
+!servicio/Dockerfile
+!servicio/requirements.txt
+!servicio/manifiesto.json
+!servicio/pipeline.json
+!servicio/modelo_precio.txt
+!servicio/modelo_q_lo.txt
+!servicio/modelo_q_hi.txt
