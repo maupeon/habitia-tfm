@@ -7,6 +7,6 @@
 5. La reserva fija evalúa exactamente el artefacto que se sirve. Quedan 18.782 filas evaluadas y 16 abstenciones. La paridad al euro se verifica sobre toda esa evaluación; es una comprobación de implementación, no otra prueba independiente de precisión.
 6. El diagnóstico temporal desarrolla con Q1–Q3 y evalúa Q4 de 2018. Q4 había sido explorado antes; se declara esa limitación.
 
-La geografía se aproxima con centroides aprendidos, soporte máximo de 1 km y municipio declarado: no constituye un polígono municipal exacto. El alquiler carece de referencia verificada. Las explicaciones SHAP representan asociaciones en log euros, no efectos causales. El score del producto es una regla de preferencia, no un modelo entrenado de satisfacción del usuario.
+La geografía se aproxima con centroides aprendidos, soporte máximo de 1 km y municipio declarado: no constituye un polígono municipal exacto. El alquiler carece de referencia verificada. Las explicaciones SHAP representan asociaciones en log euros, no efectos causales. El score del producto es una regla de preferencia, no un modelo entrenado de satisfacción del usuario. Fair y Lifestyle pueden puntuar con evidencia; Opportunity y Zone permanecen no disponibles.
 
 Fuente numérica: [resultados_revision.json](../revision_2026-09-08/experimento/resultados_revision.json). Las cifras del antiguo modelo de 8,20 % no corresponden a este contrato y no deben usarse para presentar su precisión.
