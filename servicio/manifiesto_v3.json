@@ -1,0 +1,19 @@
+{
+  "model_id": "habitIA-xgboost-2018-v3",
+  "model_version": "3.0.0",
+  "source_package": "habitia_predictor version_paquete 3 exportado 2026-09-13T19:19:48",
+  "sha256": {
+    "variables_barrio.parquet": "a6d333f6a2282fbf7542767db568f5b3e6cd4229c8169dc489f79e0fc74a963c",
+    "barrios.parquet": "4a6fa529722ec3f4aa0bae6b652e85e9de226806354bc708674b9c58812fa729",
+    "indices_distrito.parquet": "6012e1eaff08bcfea2e728e7a3f4189635131386203c82c55b0df0b66458cde8",
+    "modelo.json": "5d29cd26889cc0777196f592aa9828b18cc7d71ccd1a05ee61a95f0a44741a04",
+    "pois.parquet": "ef99f3e59ee22ebec4d0e7b8154010ad60cf8c48891686c1799f675af8033322",
+    "metadatos.json": "5da4831292ca56aad3d9054f9a64f4e1ce73bb87345b8e7056ec2f134c2f1e87"
+  },
+  "source_code_sha256": {
+    "amenidades_descripcion.py": "dcda0c52d0135c0ea1709fd6750561a71ce9decbae1d48d2cde3fbe1deecf336",
+    "predictor.py": "dcd450968407856a3f7e869c21975b8443b745e77c8aef301b32dcb89e6b17a3",
+    "produccion.py": "dd52d7e33ca880a46420cdebb8643537239cac1783321e520c1c1dc68f1f9fef",
+    "__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

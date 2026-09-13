@@ -1,0 +1,10 @@
+# Inferencia XGBoost recibida el 13/09/2026. Python >=3.12.
+numpy==2.5.0
+pandas==3.0.0
+pyarrow==24.0.0
+geopandas==1.1.2
+xgboost==3.4.1
+scikit-learn==1.9.1
+fastapi==0.141.1
+pydantic==2.13.5
+uvicorn==0.52.4

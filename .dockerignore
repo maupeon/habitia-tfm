@@ -11,3 +11,11 @@
 !servicio/modelo_precio.txt
 !servicio/modelo_q_lo.txt
 !servicio/modelo_q_hi.txt
+!predictor_v3/
+!predictor_v3/*.py
+!servicio/api_v3.py
+!servicio/requirements_v3.txt
+!servicio/manifiesto_v3.json
+!servicio/artefactos_v3/
+!servicio/artefactos_v3/*
+!servicio/Dockerfile.v3
