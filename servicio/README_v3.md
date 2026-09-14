@@ -8,13 +8,14 @@ Requiere Python >=3.12 y scikit-learn, dependencia omitida en el paquete origina
 python3.12 -m venv .venv-v3
 source .venv-v3/bin/activate
 python -m pip install -r servicio/requirements_v3.txt
+gh release download tfm-2026-09-14 --repo maupeon/habitia-tfm --pattern habitia-modelo-v3.zip
 python scripts/install_predictor_v3.py habitia-modelo-v3.zip
 python scripts/install_predictor_v3.py --check
 export VALORACION_TOKEN=un-token-local-propio
 python -m uvicorn servicio.api_v3:app --host 127.0.0.1 --port 8000 --workers 1
 ```
 
-El ZIP está en la entrega local. También se admite el ZIP original si los nombres y hashes coinciden. Los archivos se instalan en `servicio/artefactos_v3`; `VALORACION_ARTIFACTS_V3` permite cambiar la carpeta. En producción utiliza un token privado. No se necesitan credenciales de Idealista para ejecutar inferencia.
+El ZIP se descarga de la [release vigente del 14 de septiembre](https://github.com/maupeon/habitia-tfm/releases/tag/tfm-2026-09-14), con GitHub CLI autenticado y acceso al repositorio privado. También está en `06_modelo/` dentro de la entrega completa. Se admite el ZIP original si los nombres y hashes coinciden. Los archivos se instalan en `servicio/artefactos_v3`; `VALORACION_ARTIFACTS_V3` permite cambiar la carpeta. En producción utiliza un token privado. No se necesitan credenciales de Idealista para ejecutar inferencia.
 
 ## Petición y respuesta
 
