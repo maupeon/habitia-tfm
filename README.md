@@ -2,7 +2,7 @@
 
 HabitIA busca y compara viviendas de **compra y alquiler en Madrid capital**. Este repositorio contiene la integración Python del modelo entrenado por Tomás Perales Lara, su API y las pruebas de inferencia.
 
-La **[entrega vigente del 14 de septiembre de 2026](https://github.com/maupeon/habitia-tfm/releases/tag/tfm-2026-09-14)** reúne la memoria ampliada con la portada original de la UCM, los anexos, las copias de código y los seis artefactos del modelo. La memoria tiene 21 páginas totales y 19 de contenido, incluida bibliografía.
+La **[entrega vigente del 14 de septiembre de 2026](https://github.com/maupeon/habitia-tfm/releases/tag/tfm-2026-09-14-r2)** reúne la memoria ampliada con la portada original de la UCM, los anexos, las copias de código y los seis artefactos del modelo. La memoria tiene 21 páginas totales y 19 de contenido, incluida bibliografía.
 
 Trabajo Fin de Máster de Big Data, Data Science e Inteligencia Artificial, Universidad Complutense de Madrid, curso 2025–2026, clase 2.
 
@@ -10,9 +10,9 @@ Trabajo Fin de Máster de Big Data, Data Science e Inteligencia Artificial, Univ
 
 ## 1. Empezar por aquí
 
-- **Descargar la entrega completa:** [HabitIA_TFM_2026-09-14.zip](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-14/HabitIA_TFM_2026-09-14.zip).
-- **Leer la memoria:** [PDF](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-14/01_HabitIA_memoria.pdf) · [Word editable](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-14/01_HabitIA_memoria.docx).
-- **Consultar los anexos:** [PDF](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-14/02_HabitIA_anexos.pdf) · [Word editable](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-14/02_HabitIA_anexos.docx).
+- **Descargar la entrega completa:** [HabitIA_TFM_2026-09-14.zip](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-14-r2/HabitIA_TFM_2026-09-14.zip).
+- **Leer la memoria:** [PDF](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-14-r2/01_HabitIA_memoria.pdf) · [Word editable](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-14-r2/01_HabitIA_memoria.docx).
+- **Consultar los anexos:** [PDF](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-14-r2/02_HabitIA_anexos.pdf) · [Word editable](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-14-r2/02_HabitIA_anexos.docx).
 - **Ejecutar el modelo:** apartado 4 y [contrato de la API XGBoost](servicio/README_v3.md).
 - **Probar la aplicación:** [HabitIA](https://habitiaucm.vercel.app) · [presentación interactiva](https://habitiaucm.vercel.app/presentacion) · [código web](https://github.com/maupeon/agente-inmobiliario).
 
@@ -48,11 +48,13 @@ habitia-tfm/
 │   └── Dockerfile.v3
 ├── scripts/install_predictor_v3.py
 ├── tests_v3/                     # Pruebas de API, operaciones y dominio
-├── docs/                         # Contratos, paridad y documentación histórica
+├── docs/verificacion-paridad-v3.json # Evidencia de paridad con el original
 └── data/README.md                # Datos custodiados fuera de Git
 ```
 
 El ZIP de entrega añade memoria y anexos en PDF y Word, copias de ambos repositorios y del paquete original de Tomás, `habitia-modelo-v3.zip`, una guía de defensa y la carpeta `09_revision/` con la auditoría, la descripción reproducible del parquet, diagramas y capturas sintéticas. La portada reproduce la referencia facilitada por el equipo, con fecha del 17 de septiembre de 2026.
+
+Los nombres `predictor_v3` y `servicio.api_v3:app` se conservan para mantener las rutas de integración y los comandos documentados. El predictor también admite lotes locales con `python -m predictor_v3.predictor predecir anuncios.json -o predicciones.csv`.
 
 La presentación web se mantiene como pieza independiente. Esta entrega documental no incorpora el notebook de entrenamiento original de XGBoost ni una presentación estática final.
 
@@ -67,7 +69,7 @@ python3.12 -m venv .venv-v3
 source .venv-v3/bin/activate
 python -m pip install -r servicio/requirements_v3.txt
 
-gh release download tfm-2026-09-14 --repo maupeon/habitia-tfm --pattern habitia-modelo-v3.zip
+gh release download tfm-2026-09-14-r2 --repo maupeon/habitia-tfm --pattern habitia-modelo-v3.zip
 python scripts/install_predictor_v3.py habitia-modelo-v3.zip
 python scripts/install_predictor_v3.py --check
 
@@ -87,7 +89,7 @@ python -m unittest discover -s tests_v3 -v
 python scripts/install_predictor_v3.py --check
 ```
 
-Las pruebas verifican autenticación, lotes mixtos de venta y alquiler, comparación mensual, errores de entrada y dominios admitidos. [Paridad registrada](docs/verificacion-paridad-v3.json). La carpeta `09_revision/` del ZIP incluye el script de auditoría y sus resultados; estas comprobaciones no reentrenan el modelo ni recalculan su precisión de test.
+Las pruebas verifican autenticación, lotes mixtos de venta y alquiler, comparación mensual, errores de entrada y dominios admitidos. Hay que instalar los artefactos antes de ejecutarlas; GitHub Actions los descarga y verifica para ejecutar también las pruebas de integración. [Paridad registrada](docs/verificacion-paridad-v3.json). La carpeta `09_revision/` del ZIP incluye el script de auditoría y sus resultados; estas comprobaciones no reentrenan el modelo ni recalculan su precisión de test.
 
 ## 6. Datos disponibles y materiales pendientes
 
@@ -95,8 +97,4 @@ El histórico enriquecido `habitia_madrid_2018.parquet` está disponible fuera d
 
 El histórico no identifica por sí solo la matriz final ni las particiones de entrenamiento y test de Tomás. Quedan pendientes sus notebooks y la confirmación de esas particiones para reproducir las métricas. Los seis artefactos de producción sí permiten ejecutar las predicciones. El parquet completo no se incluye en la release ni en el ZIP ordinario de entrega.
 
-## 7. Material histórico
-
-La [release del 13 de septiembre](https://github.com/maupeon/habitia-tfm/releases/tag/tfm-2026-09-13), el [notebook ejecutado](TFM_HabitIA_entrenamiento.ipynb), el [cuaderno de Colab](colab/HabitIA_Colab.ipynb), `src/`, `tests/` y `revision_2026-09-08/` conservan el estudio anterior de LightGBM. Sus instrucciones y resultados corresponden a ese experimento y no al entrenamiento de XGBoost.
-
-La [guía de reproducción histórica](docs/reproduccion.md), la [metodología anterior](docs/metodologia.md) y el [contrato v2](servicio/README.md) permanecen disponibles para consultar esa evidencia. La entrada para ejecutar el producto vigente es `servicio.api_v3:app`.
+Las versiones anteriores del estudio se conservan en el historial de Git y en la [release del 13 de septiembre](https://github.com/maupeon/habitia-tfm/releases/tag/tfm-2026-09-13). El repositorio activo contiene únicamente la integración XGBoost, su instalación, pruebas y documentación.

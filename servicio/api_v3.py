@@ -1,4 +1,4 @@
-"""Servicio HTTP del predictor XGBoost recibido. Conserva v2 como artefacto histórico."""
+"""Servicio HTTP del predictor XGBoost para compra y alquiler en Madrid."""
 from __future__ import annotations
 import hmac
 import logging

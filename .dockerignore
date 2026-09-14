@@ -1,18 +1,8 @@
+# Solo se envía al contenedor lo necesario para la inferencia.
 **
-!src/
-!src/model_pipeline.py
-!src/valorador.py
-!servicio/
-!servicio/api.py
-!servicio/Dockerfile
-!servicio/requirements.txt
-!servicio/manifiesto.json
-!servicio/pipeline.json
-!servicio/modelo_precio.txt
-!servicio/modelo_q_lo.txt
-!servicio/modelo_q_hi.txt
 !predictor_v3/
 !predictor_v3/*.py
+!servicio/
 !servicio/api_v3.py
 !servicio/requirements_v3.txt
 !servicio/manifiesto_v3.json

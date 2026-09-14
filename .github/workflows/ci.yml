@@ -1,26 +1,9 @@
-name: Verificación del modelo
+name: Verificación de XGBoost
 on: [push, pull_request]
 permissions:
   contents: read
 jobs:
-  tests:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-          cache: pip
-          cache-dependency-path: |
-            requirements_revision.txt
-            servicio/requirements.txt
-      - run: python -m pip install -r requirements_revision.txt -r servicio/requirements.txt
-      - run: python -m unittest discover -s tests -v
-        env:
-          OMP_NUM_THREADS: '2'
-          OPENBLAS_NUM_THREADS: '2'
-      - run: python -m compileall -q src servicio tests scripts
-  predictor-v3:
+  predictor:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -29,6 +12,26 @@ jobs:
           python-version: '3.12'
           cache: pip
           cache-dependency-path: servicio/requirements_v3.txt
-      - run: python -m pip install -r servicio/requirements_v3.txt httpx
-      - run: python -m unittest discover -s tests_v3 -v
-      - run: python -m compileall -q predictor_v3 servicio/api_v3.py
+      - name: Instalar dependencias
+        run: python -m pip install -r servicio/requirements_v3.txt httpx
+      - name: Descargar y verificar los seis artefactos
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          # Los pesos son los mismos; esta release estable permite validar nuevas revisiones.
+          gh release download tfm-2026-09-14 --pattern habitia-modelo-v3.zip
+          python scripts/install_predictor_v3.py habitia-modelo-v3.zip
+          python scripts/install_predictor_v3.py --check
+      - name: Probar validación e inferencia de compra y alquiler
+        run: python -m unittest discover -s tests_v3 -v
+        env:
+          OMP_NUM_THREADS: '1'
+          OPENBLAS_NUM_THREADS: '1'
+          MKL_NUM_THREADS: '1'
+      - name: Comprobar módulos y CLI
+        run: |
+          python -m compileall -q predictor_v3 servicio scripts tests_v3
+          python -m predictor_v3.predictor --help
+      - name: Construir el contenedor de producción
+        run: docker build -f servicio/Dockerfile.v3 -t habitia-valoracion:ci .

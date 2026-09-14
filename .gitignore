@@ -1,4 +1,4 @@
-# Entornos, credenciales y salidas regenerables
+# Entornos, credenciales y cachés locales.
 .venv*/
 __pycache__/
 *.py[cod]
@@ -8,17 +8,16 @@ __pycache__/
 .DS_Store
 .ipynb_checkpoints/
 *.log
-# Los originales y las predicciones completas se custodian fuera de Git.
+# Datos privados y modelos descargados; las entregas se publican como releases.
 data/*
 !data/README.md
+servicio/artefactos_v3/
+*.zip
+*.csv
+*.parquet
+# Restos locales del estudio histórico, conservados fuera del código activo.
+revision_*/
+auditoria_*/
 servicio/modelo_*.txt
 servicio/pipeline.json
-revision_2026-09-08/experimento/*.parquet
-revision_2026-09-08/experimento/abstenciones_*.csv
-revision_2026-09-08/experimento/artefacto/
-revision_2026-09-08/repeticion*/
-revision_2026-09-08/experimento_nuevo/
-auditoria_2026-09-08/
-*.zip
-servicio/artefactos_v3/
 TFM_HabitIA_entrenamiento.html

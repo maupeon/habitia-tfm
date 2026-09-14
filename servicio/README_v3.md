@@ -8,14 +8,14 @@ Requiere Python >=3.12 y scikit-learn, dependencia omitida en el paquete origina
 python3.12 -m venv .venv-v3
 source .venv-v3/bin/activate
 python -m pip install -r servicio/requirements_v3.txt
-gh release download tfm-2026-09-14 --repo maupeon/habitia-tfm --pattern habitia-modelo-v3.zip
+gh release download tfm-2026-09-14-r2 --repo maupeon/habitia-tfm --pattern habitia-modelo-v3.zip
 python scripts/install_predictor_v3.py habitia-modelo-v3.zip
 python scripts/install_predictor_v3.py --check
 export VALORACION_TOKEN=un-token-local-propio
 python -m uvicorn servicio.api_v3:app --host 127.0.0.1 --port 8000 --workers 1
 ```
 
-El ZIP se descarga de la [release vigente del 14 de septiembre](https://github.com/maupeon/habitia-tfm/releases/tag/tfm-2026-09-14), con GitHub CLI autenticado y acceso al repositorio privado. También está en `06_modelo/` dentro de la entrega completa. Se admite el ZIP original si los nombres y hashes coinciden. Los archivos se instalan en `servicio/artefactos_v3`; `VALORACION_ARTIFACTS_V3` permite cambiar la carpeta. En producción utiliza un token privado. No se necesitan credenciales de Idealista para ejecutar inferencia.
+El ZIP se descarga de la [release vigente del 14 de septiembre](https://github.com/maupeon/habitia-tfm/releases/tag/tfm-2026-09-14-r2), con GitHub CLI autenticado y acceso al repositorio privado. También está en `06_modelo/` dentro de la entrega completa. Se admite el ZIP original si los nombres y hashes coinciden. Los archivos se instalan en `servicio/artefactos_v3`; `VALORACION_ARTIFACTS_V3` permite cambiar la carpeta. En producción utiliza un token privado. No se necesitan credenciales de Idealista para ejecutar inferencia.
 
 ## Petición y respuesta
 
@@ -60,4 +60,4 @@ docker run --rm -p 8000:8000 -e VALORACION_TOKEN habitia-valoracion:v3
 
 `docs/verificacion-paridad-v3.json` registra 131 anuncios sintéticos con igualdad exacta de precio respecto al paquete original. Las pruebas verifican autenticación, lotes mixtos de venta y alquiler, comparación de mensualidades, errores, dominios y ausencia del precio anunciado entre los predictores. No recalculan métricas de test.
 
-La web debe admitir v3 antes de activar la imagen nueva de Fly. La URL y el token se conservan. Para reconstruir v2 se mantienen su Dockerfile, API, contrato y distribución de pesos. El 9,29 % de error mediano declarado por XGBoost no es comparable directamente con el 10,31 % del estudio agrupado LightGBM sin una reserva y protocolo comunes.
+GitHub Actions descarga el paquete de la release y verifica sus hashes antes de ejecutar las siete pruebas. El código de exportación original y los estudios anteriores permanecen en los archivos de entrega y el historial de Git; este árbol contiene la inferencia vigente.
