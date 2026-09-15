@@ -1,87 +1,54 @@
-# HabitIA · modelo XGBoost y entrega académica del TFM
+# HabitIA
 
-HabitIA busca y compara viviendas de **compra y alquiler en Madrid capital**. Este repositorio contiene la integración Python del modelo entrenado por Tomás Perales Lara, su API y las pruebas de inferencia.
-
-La **[entrega vigente del 14 de septiembre de 2026](https://github.com/maupeon/habitia-tfm/releases/tag/tfm-2026-09-14-r2)** reúne la memoria ampliada con la portada original de la UCM, los anexos, las copias de código y los seis artefactos del modelo. La memoria tiene 21 páginas totales y 19 de contenido, incluida bibliografía.
-
-Trabajo Fin de Máster de Big Data, Data Science e Inteligencia Artificial, Universidad Complutense de Madrid, curso 2025–2026, clase 2.
+Aplicación de búsqueda y comparación de viviendas de **compra y alquiler en Madrid capital**, desarrollada como TFM del Máster de Big Data, Data Science e Inteligencia Artificial de la Universidad Complutense de Madrid, curso 2025–2026, clase 2.
 
 **Equipo:** Mauricio Peón García · João Paulo Nogueira Cunha · Manuel Macedo Púlido · Aldo Mauricio Ress Vilet · Tomás Perales Lara. **Tutores:** Carlos Ortega y Santiago Mota.
 
-## 1. Empezar por aquí
+Este repositorio contiene el predictor XGBoost integrado, la API Python, su instalación, pruebas y configuración de despliegue.
 
-- **Descargar la entrega completa:** [HabitIA_TFM_2026-09-14.zip](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-14-r2/HabitIA_TFM_2026-09-14.zip).
-- **Leer la memoria:** [PDF](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-14-r2/01_HabitIA_memoria.pdf) · [Word editable](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-14-r2/01_HabitIA_memoria.docx).
-- **Consultar los anexos:** [PDF](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-14-r2/02_HabitIA_anexos.pdf) · [Word editable](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-14-r2/02_HabitIA_anexos.docx).
-- **Ejecutar el modelo:** apartado 4 y [contrato de la API XGBoost](servicio/README_v3.md).
-- **Probar la aplicación:** [HabitIA](https://habitiaucm.vercel.app) · [presentación interactiva](https://habitiaucm.vercel.app/presentacion) · [código web](https://github.com/maupeon/agente-inmobiliario).
+## Entrega
 
-Los repositorios y sus releases son privados. Los enlaces de GitHub requieren una cuenta con acceso. El ZIP incluye copias del código para revisar la entrega sin conexión a GitHub. `VERSIONES.json` identifica los commits incluidos y `SHA256SUMS.txt` permite comprobar su integridad.
+La [entrega esencial del 15 de septiembre de 2026](https://github.com/maupeon/habitia-tfm/releases/tag/tfm-2026-09-15) contiene:
 
-## 2. Modelo vigente y alcance
+- Memoria en PDF y Word: 21 páginas totales, 19 de contenido incluida la bibliografía, con la portada UCM facilitada por el equipo.
+- Anexos en PDF y Word: 15 páginas con datos del modelo, contrato y reproducción de la inferencia.
+- `03_codigo/`: copias de los repositorios de la aplicación y del predictor integrado.
+- `04_modelo/habitia-modelo-v3.zip`: los seis artefactos necesarios para ejecutar el modelo.
+- Instrucciones, versiones y sumas SHA-256.
 
-| Elemento | Estado |
-| --- | --- |
-| Modelo | `habitIA-xgboost-2018-v3`, entrenado y exportado el 13 de septiembre |
-| Estructura | 401 árboles y 21 variables |
-| Contrato HTTP | Versión `3.1.0`, API `servicio.api_v3:app` |
-| Venta | Precio de oferta base de 2018, indexado a 2025 por distrito |
-| Alquiler | Mensualidad derivada de la venta estimada y ratios distritales de 2024 |
-| Cobertura de la app | Madrid capital; viviendas admitidas por el contrato, hasta 367 m² |
-| Test histórico | MdAPE 9,29 %, registrado en los metadatos del paquete |
-| Comprobaciones de integración | 131 casos sintéticos con diferencia máxima de 0 € respecto al predictor original y 7 pruebas del servicio |
+**[Descargar el ZIP completo](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-15/HabitIA_TFM_2026-09-14.zip)** · [Memoria PDF](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-15/01_HabitIA_memoria.pdf) · [Anexos PDF](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-15/02_HabitIA_anexos.pdf)
 
-Las métricas de test proceden de los metadatos recibidos: todavía no se han reproducido con las particiones originales. El alquiler no tiene un entrenamiento ni una validación independiente. No se ofrecen intervalos calibrados, SHAP ni una clasificación validada de oportunidad. La referencia estima precios de oferta; no acredita precios de operaciones cerradas ni precisión actual.
+Los repositorios y las releases son privados. El ZIP permite revisar el código sin acceso a GitHub. `VERSIONES.json` identifica los commits incluidos y `SHA256SUMS.txt` verifica los archivos. El nombre del ZIP conserva la fecha de la memoria; la revisión del paquete es del 15 de septiembre.
 
-Los pesos recibidos se conservan. La adaptación valida las entradas, reconstruye las variables y mantiene las unidades de cada operación. [Contrato, ejemplo de petición y límites](servicio/README_v3.md).
+[Aplicación](https://habitiaucm.vercel.app) · [Presentación web](https://habitiaucm.vercel.app/presentacion) · [Repositorio web](https://github.com/maupeon/agente-inmobiliario)
 
-## 3. Estructura y contenido de la entrega
+## Ejecutar el modelo
 
-```text
-habitia-tfm/
-├── README.md
-├── predictor_v3/                  # Inferencia del XGBoost recibido
-├── servicio/
-│   ├── api_v3.py                 # API vigente
-│   ├── README_v3.md              # Instalación, contrato y despliegue
-│   ├── requirements_v3.txt       # Dependencias del servicio vigente
-│   └── Dockerfile.v3
-├── scripts/install_predictor_v3.py
-├── tests_v3/                     # Pruebas de API, operaciones y dominio
-├── docs/verificacion-paridad-v3.json # Evidencia de paridad con el original
-└── data/README.md                # Datos custodiados fuera de Git
-```
-
-El ZIP de entrega añade memoria y anexos en PDF y Word, copias de ambos repositorios y del paquete original de Tomás, `habitia-modelo-v3.zip`, una guía de defensa y la carpeta `09_revision/` con la auditoría, la descripción reproducible del parquet, diagramas y capturas sintéticas. La portada reproduce la referencia facilitada por el equipo, con fecha del 17 de septiembre de 2026.
-
-Los nombres `predictor_v3` y `servicio.api_v3:app` se conservan para mantener las rutas de integración y los comandos documentados. El predictor también admite lotes locales con `python -m predictor_v3.predictor predecir anuncios.json -o predicciones.csv`.
-
-La presentación web se mantiene como pieza independiente. Esta entrega documental no incorpora el notebook de entrenamiento original de XGBoost ni una presentación estática final.
-
-## 4. Arrancar la API sin el dataset
-
-Requisitos: Python 3.12 o superior, `libomp` en macOS o `libgomp1` en Linux y GitHub CLI autenticado con acceso al repositorio. También se puede extraer `06_modelo/habitia-modelo-v3.zip` de la entrega completa.
+Requisitos: Python 3.12 o superior y `libomp` en macOS o `libgomp1` en Linux. Extraer `03_codigo/habitia-tfm.zip` y abrir una terminal en la carpeta `habitia-tfm`. El instalador recibe la ruta al ZIP de `04_modelo/`.
 
 ```bash
-git clone https://github.com/maupeon/habitia-tfm.git
-cd habitia-tfm
 python3.12 -m venv .venv-v3
 source .venv-v3/bin/activate
 python -m pip install -r servicio/requirements_v3.txt
-
-gh release download tfm-2026-09-14-r2 --repo maupeon/habitia-tfm --pattern habitia-modelo-v3.zip
-python scripts/install_predictor_v3.py habitia-modelo-v3.zip
+python scripts/install_predictor_v3.py /ruta/a/habitia-modelo-v3.zip
 python scripts/install_predictor_v3.py --check
-
 export VALORACION_TOKEN=un-token-local-propio
 python -m uvicorn servicio.api_v3:app --host 127.0.0.1 --port 8000 --workers 1
 ```
 
-En otra terminal: `curl http://127.0.0.1:8000/salud`. El token del ejemplo se debe sustituir por una credencial privada al publicar el servicio. No hacen falta el dataset de entrenamiento ni credenciales de Idealista para ejecutar inferencia local.
+También se puede descargar el modelo con GitHub CLI autenticado:
 
-Para conectar la web, configurar `VALORACION_URL=http://127.0.0.1:8000` y el mismo `VALORACION_TOKEN` en el servidor Next.js. [Petición de ejemplo y manejo de errores](servicio/README_v3.md).
+```bash
+gh release download tfm-2026-09-15 --repo maupeon/habitia-tfm --pattern habitia-modelo-v3.zip
+```
 
-## 5. Comprobaciones
+`GET /salud` comprueba la carga del modelo. Para conectar la web, configurar `VALORACION_URL=http://127.0.0.1:8000` y el mismo `VALORACION_TOKEN` en el servidor Next.js. Utilizar una credencial privada al publicar el servicio. [Contrato de la API, ejemplo de petición y despliegue](servicio/README_v3.md).
+
+Para lotes locales: `python -m predictor_v3.predictor predecir anuncios.json -o predicciones.csv`. No se necesita el paquete original de Tomás ni el histórico de entrenamiento para ejecutar la inferencia.
+
+## Verificación
+
+Después de instalar los artefactos:
 
 ```bash
 python -m pip install httpx
@@ -89,12 +56,14 @@ python -m unittest discover -s tests_v3 -v
 python scripts/install_predictor_v3.py --check
 ```
 
-Las pruebas verifican autenticación, lotes mixtos de venta y alquiler, comparación mensual, errores de entrada y dominios admitidos. Hay que instalar los artefactos antes de ejecutarlas; GitHub Actions los descarga y verifica para ejecutar también las pruebas de integración. [Paridad registrada](docs/verificacion-paridad-v3.json). La carpeta `09_revision/` del ZIP incluye el script de auditoría y sus resultados; estas comprobaciones no reentrenan el modelo ni recalculan su precisión de test.
+Las siete pruebas verifican autenticación, compra y alquiler, comparación mensual y errores de entrada y dominio. GitHub Actions instala y verifica los pesos, ejecuta las pruebas y construye el contenedor. La [paridad registrada](docs/verificacion-paridad-v3.json) recoge 131 anuncios sintéticos con diferencia máxima de 0 € respecto al predictor original.
 
-## 6. Datos disponibles y materiales pendientes
+## Modelo y datos
 
-El histórico enriquecido `habitia_madrid_2018.parquet` está disponible fuera de Git: 94.852 filas, 62 columnas y 75.804 `ASSETID` distintos. Incluye `PRICE` y 18 de las 21 entradas del XGBoost. Faltan las tres columnas territoriales exactas del paquete: `alq_mediana_eur_m2_barrio`, `delitos_per_10k_barrio` e `indice_vulnerabilidad`.
+`habitIA-xgboost-2018-v3` contiene 401 árboles y 21 variables. El contrato HTTP es `3.1.0`. Estima venta de 2018 indexada a 2025 y deriva el alquiler mensual mediante ratios distritales de 2024. El dominio de la aplicación es Madrid capital, con viviendas admitidas de hasta 367 m².
 
-El histórico no identifica por sí solo la matriz final ni las particiones de entrenamiento y test de Tomás. Quedan pendientes sus notebooks y la confirmación de esas particiones para reproducir las métricas. Los seis artefactos de producción sí permiten ejecutar las predicciones. El parquet completo no se incluye en la release ni en el ZIP ordinario de entrega.
+El MdAPE histórico del 9,29 % procede de los metadatos recibidos; no se ha recalculado con las particiones originales. El alquiler no tiene entrenamiento ni validación independiente. No se ofrecen intervalos calibrados, SHAP ni una clasificación validada de oportunidad.
 
-Las versiones anteriores del estudio se conservan en el historial de Git y en la [release del 13 de septiembre](https://github.com/maupeon/habitia-tfm/releases/tag/tfm-2026-09-13). El repositorio activo contiene únicamente la integración XGBoost, su instalación, pruebas y documentación.
+El equipo conserva fuera de la entrega el histórico enriquecido `habitia_madrid_2018.parquet`: 94.852 filas, 62 columnas y 75.804 `ASSETID` distintos. Contiene `PRICE` y 18 de las 21 entradas del modelo. Faltan las columnas exactas `alq_mediana_eur_m2_barrio`, `delitos_per_10k_barrio` e `indice_vulnerabilidad`. SHA-256: `7c20dce686fb415430660167f092eb3e0ab44dae2e1221bc3db61fd94d3600ca`.
+
+Siguen pendientes los notebooks de Tomás y la confirmación de la matriz final y las particiones para reproducir el entrenamiento. La procedencia del paquete y los hashes de sus artefactos y código original constan en [el manifiesto](servicio/manifiesto_v3.json). El paquete original y los materiales de auditoría se conservan en el archivo privado del equipo y en releases anteriores.

@@ -9,8 +9,7 @@ __pycache__/
 .ipynb_checkpoints/
 *.log
 # Datos privados y modelos descargados; las entregas se publican como releases.
-data/*
-!data/README.md
+data/
 servicio/artefactos_v3/
 *.zip
 *.csv
