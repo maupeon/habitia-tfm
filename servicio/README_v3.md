@@ -1,21 +1,21 @@
 # Servicio XGBoost v3
 
-Integra el paquete `habitia_predictor` recibido el 13 de septiembre de 2026. El código de inferencia está en `predictor_v3/`, con imports relativos y correcciones de validación. Los pesos no se modifican. `manifiesto_v3.json` guarda hashes de los seis artefactos y del código recibido.
+El servicio expone el modelo XGBoost de HabitIA para compra y alquiler en Madrid capital. `predictor_v3/` reconstruye las variables y ejecuta la inferencia. `manifiesto_v3.json` identifica los seis artefactos mediante SHA-256 y conserva la procedencia técnica de la implementación de referencia.
 
-Requiere Python >=3.12 y scikit-learn, dependencia omitida en el paquete original que necesita `XGBRegressor`. La API carga el modelo una sola vez mediante el [ciclo de vida de FastAPI](https://fastapi.tiangolo.com/advanced/events/). El [formato nativo de XGBoost](https://xgboost.readthedocs.io/en/stable/python/python_api.html) permite cargarlo sin pickle.
+Requiere Python >=3.12 y las dependencias fijadas en `requirements_v3.txt`, incluido scikit-learn para `XGBRegressor`. La API carga el modelo una sola vez mediante el [ciclo de vida de FastAPI](https://fastapi.tiangolo.com/advanced/events/). El [formato nativo de XGBoost](https://xgboost.readthedocs.io/en/stable/python/python_api.html) permite cargarlo sin pickle.
 
 ```bash
 python3.12 -m venv .venv-v3
 source .venv-v3/bin/activate
 python -m pip install -r servicio/requirements_v3.txt
-gh release download tfm-2026-09-15 --repo maupeon/habitia-tfm --pattern habitia-modelo-v3.zip
+gh release download tfm-2026-09-15-r2 --repo maupeon/habitia-tfm --pattern habitia-modelo-v3.zip
 python scripts/install_predictor_v3.py habitia-modelo-v3.zip
 python scripts/install_predictor_v3.py --check
 export VALORACION_TOKEN=un-token-local-propio
 python -m uvicorn servicio.api_v3:app --host 127.0.0.1 --port 8000 --workers 1
 ```
 
-El ZIP se descarga de la [release vigente del 15 de septiembre](https://github.com/maupeon/habitia-tfm/releases/tag/tfm-2026-09-15), con GitHub CLI autenticado y acceso al repositorio privado. También está en `04_modelo/` dentro de la entrega completa. Los archivos se instalan en `servicio/artefactos_v3`; `VALORACION_ARTIFACTS_V3` permite cambiar la carpeta. En producción utiliza un token privado. No se necesitan el paquete original ni credenciales de Idealista para ejecutar inferencia.
+El ZIP se descarga de la [release vigente del 15 de septiembre](https://github.com/maupeon/habitia-tfm/releases/tag/tfm-2026-09-15-r2), con GitHub CLI autenticado y acceso al repositorio privado. También está en `04_modelo/` dentro de la entrega completa. Los archivos se instalan en `servicio/artefactos_v3`; `VALORACION_ARTIFACTS_V3` permite cambiar la carpeta. En producción utiliza un token privado. La inferencia local se ejecuta con los artefactos instalados, sin consultar Idealista.
 
 ## Petición y respuesta
 
@@ -49,7 +49,7 @@ Un lote válido como petición devuelve 200 con `resultados` y `errores`, inclus
 
 ## Pruebas y despliegue
 
-Fly utiliza una máquina compartida de 1 GB y 60 segundos de margen para el arranque. La carga de XGBoost agotó los 512 MB de la configuración anterior; se amplió la memoria sin cambiar los pesos.
+Fly utiliza una máquina compartida de 1 GB y 60 segundos de margen para el arranque. La configuración reserva memoria para cargar el modelo y las tablas geográficas.
 
 ```bash
 python -m pip install httpx
@@ -58,6 +58,6 @@ docker build -f servicio/Dockerfile.v3 -t habitia-valoracion:v3 .
 docker run --rm -p 8000:8000 -e VALORACION_TOKEN habitia-valoracion:v3
 ```
 
-`docs/verificacion-paridad-v3.json` registra 131 anuncios sintéticos con igualdad exacta de precio respecto al paquete original. Las pruebas verifican autenticación, lotes mixtos de venta y alquiler, comparación de mensualidades, errores, dominios y ausencia del precio anunciado entre los predictores. No recalculan métricas de test.
+El [README del repositorio](../README.md#verificación) documenta la igualdad de resultados entre la implementación de referencia y el servicio en 131 anuncios sintéticos. Las pruebas verifican autenticación, lotes mixtos de venta y alquiler, comparación de mensualidades, errores, dominios y ausencia del precio anunciado entre los predictores. No recalculan métricas de test.
 
-GitHub Actions descarga el paquete de la release y verifica sus hashes antes de ejecutar las siete pruebas. El código de exportación original y los materiales de auditoría permanecen en el archivo privado del equipo y en releases anteriores. Este árbol contiene la inferencia vigente.
+GitHub Actions descarga el paquete de la release y verifica sus hashes antes de ejecutar las siete pruebas. La memoria y los anexos describen las variables, la metodología de verificación y el alcance de la evaluación.

@@ -1,8 +1,0 @@
-{
-  "tipo": "Paridad funcional con anuncios sint\u00e9ticos, no evaluaci\u00f3n de precisi\u00f3n",
-  "anuncios": 131,
-  "validos": 131,
-  "mismos_estados": true,
-  "max_diferencia_euros": 0.0,
-  "modelo_sha256": "5d29cd26889cc0777196f592aa9828b18cc7d71ccd1a05ee61a95f0a44741a04"
-}

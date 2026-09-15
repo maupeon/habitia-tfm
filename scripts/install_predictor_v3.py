@@ -23,7 +23,7 @@ def main():
         print("Seis artefactos v3 verificados")
         return
     if not args.zip:
-        parser.error("Indica el ZIP recibido o utiliza --check")
+        parser.error("Indica el ZIP del modelo o utiliza --check")
     with tempfile.TemporaryDirectory() as temp, zipfile.ZipFile(args.zip) as archive:
         for name, expected in manifest.items():
             matches = [p for p in archive.namelist() if Path(p).name == name and not p.startswith("__MACOSX/")]

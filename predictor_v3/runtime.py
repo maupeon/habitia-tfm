@@ -1,4 +1,4 @@
-"""Contrato v3: pesos recibidos sin reentrenar, entradas estrictas y salidas trazables."""
+"""Contrato v3: inferencia XGBoost, entradas estrictas y salidas trazables."""
 from __future__ import annotations
 
 import hashlib
@@ -94,7 +94,7 @@ class RuntimePredictor:
                     "independantHouse", "semidetachedHouse", "terracedHouse"}:
             return None, ("fuera_ambito", "Tipología no admitida: el modelo no valora casas, oficinas ni parcelas.")
         if a.size is not None and a.size > 367:
-            return None, ("fuera_ambito", "Superficie superior al límite de 367 m² del paquete recibido.")
+            return None, ("fuera_ambito", "Superficie superior al límite de 367 m² del modelo.")
         if (a.latitude is None or a.longitude is None or not -90 <= a.latitude <= 90
                 or not -180 <= a.longitude <= 180):
             return None, ("datos_insuficientes", "Se requieren coordenadas finitas y válidas del anuncio.")

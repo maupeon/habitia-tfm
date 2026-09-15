@@ -1,8 +1,8 @@
 """Reconstrucción de variables y ajuste de precios durante la inferencia.
 
 Las geometrías, puntos de interés, variables de barrio e índices se leen del
-paquete instalado. Los cálculos conservan las transformaciones del predictor
-recibido: distancias, barrio, atributos del anuncio, venta indexada y renta.
+paquete instalado. Los cálculos incluyen distancias, asignación de barrio,
+atributos del anuncio, venta indexada y renta mensual.
 """
 
 import geopandas as gpd

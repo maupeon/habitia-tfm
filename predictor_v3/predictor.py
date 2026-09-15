@@ -4,7 +4,7 @@ Carga los seis artefactos instalados y calcula venta, renta mensual y calidad de
 las entradas. La API utiliza RuntimePredictor para validar el contrato y los hashes.
 
 Uso por lotes: python -m predictor_v3.predictor predecir anuncios.json -o predicciones.csv
-El entrenamiento y la exportación originales se conservan en el paquete de Tomás.
+La ejecución utiliza el modelo nativo y las tablas instaladas en artefactos_v3.
 """
 
 import argparse
