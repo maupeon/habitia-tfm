@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("source", type=Path, nargs="?", help="ZIP, carpeta nuevo_modelo o carpeta con los seis artefactos")
+    parser.add_argument("source", type=Path, nargs="?", help="ZIP, carpeta habitia_predictor o carpeta con los seis artefactos")
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
     manifest = json.loads((ROOT / "servicio/manifiesto_v3.json").read_text())["sha256"]

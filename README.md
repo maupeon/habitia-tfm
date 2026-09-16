@@ -8,15 +8,15 @@ Este repositorio contiene el predictor XGBoost integrado, la API Python, su inst
 
 ## Entrega
 
-La [entrega actualizada del 16 de septiembre de 2026](https://github.com/maupeon/habitia-tfm/releases/tag/tfm-2026-09-16) contiene:
+La [entrega actualizada del 16 de septiembre de 2026](https://github.com/maupeon/habitia-tfm/releases/tag/tfm-2026-09-16-r2) contiene:
 
 - Memoria en PDF y Word, con portada UCM y resultados del nuevo modelo.
 - Anexos en PDF y Word con datos del modelo, contrato y reproducción de la inferencia.
 - `03_codigo/`: copias de los repositorios de la aplicación y del predictor integrado.
-- `04_modelo/habitia-modelo-v3.zip`: los seis artefactos necesarios para ejecutar el modelo.
+- `04_modelo/habitia-modelo-v3.3.zip`: los seis artefactos necesarios para ejecutar el modelo.
 - Instrucciones, versiones y sumas SHA-256.
 
-**[Descargar el ZIP completo](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-16/HabitIA_TFM_2026-09-16.zip)** · [Memoria PDF](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-16/01_HabitIA_memoria.pdf) · [Anexos PDF](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-16/02_HabitIA_anexos.pdf)
+**[Descargar el ZIP completo](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-16-r2/HabitIA_TFM_2026-09-16.zip)** · [Memoria PDF](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-16-r2/01_HabitIA_memoria.pdf) · [Anexos PDF](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-16-r2/02_HabitIA_anexos.pdf)
 
 Los repositorios y la release de entrega son públicos y se pueden consultar sin iniciar sesión en GitHub. El ZIP permite descargar el código y los artefactos para revisarlos localmente. `VERSIONES.json` identifica los commits incluidos y `SHA256SUMS.txt` verifica los archivos. La revisión vigente se identifica en VERSIONES.json.
 
@@ -35,13 +35,13 @@ La carpeta `.github/` contiene la automatización de las pruebas y la construcci
 
 ## Ejecutar el modelo
 
-Requisitos: Python 3.12 o superior y `libomp` en macOS o `libgomp1` en Linux. Extraer `03_codigo/habitia-tfm.zip` y abrir una terminal en la carpeta `habitia-tfm`. El instalador recibe la ruta al ZIP de `04_modelo/`; también admite directamente la carpeta recibida `nuevo_modelo` o una carpeta con los seis artefactos.
+Requisitos: Python 3.12 o superior y `libomp` en macOS o `libgomp1` en Linux. Extraer `03_codigo/habitia-tfm.zip` y abrir una terminal en la carpeta `habitia-tfm`. El instalador recibe la ruta al ZIP de `04_modelo/`; también admite directamente la carpeta recibida `habitia_predictor` o una carpeta con los seis artefactos.
 
 ```bash
 python3.12 -m venv .venv-v3
 source .venv-v3/bin/activate
 python -m pip install -r servicio/requirements_v3.txt
-python scripts/install_predictor_v3.py /ruta/a/habitia-modelo-v3.zip
+python scripts/install_predictor_v3.py /ruta/a/habitia-modelo-v3.3.zip
 python scripts/install_predictor_v3.py --check
 export VALORACION_TOKEN=un-token-local-propio
 python -m uvicorn servicio.api_v3:app --host 127.0.0.1 --port 8000 --workers 1
@@ -50,7 +50,7 @@ python -m uvicorn servicio.api_v3:app --host 127.0.0.1 --port 8000 --workers 1
 También se puede descargar el modelo con GitHub CLI autenticado:
 
 ```bash
-gh release download tfm-2026-09-16 --repo maupeon/habitia-tfm --pattern habitia-modelo-v3.zip
+gh release download tfm-2026-09-16-r2 --repo maupeon/habitia-tfm --pattern habitia-modelo-v3.3.zip
 ```
 
 `GET /salud` comprueba la carga del modelo. Para conectar la web, configurar `VALORACION_URL=http://127.0.0.1:8000` y el mismo `VALORACION_TOKEN` en el servidor Next.js. Utilizar una credencial privada al publicar el servicio. [Contrato de la API, ejemplo de petición y despliegue](servicio/README_v3.md).
@@ -67,12 +67,12 @@ python -m unittest discover -s tests_v3 -v
 python scripts/install_predictor_v3.py --check
 ```
 
-Las 13 pruebas verifican autenticación, compra y alquiler, comparación mensual, errores de entrada, nuevas abstenciones de dominio, obra nueva e instalación desde carpeta o ZIP. GitHub Actions instala y verifica los pesos de la release `tfm-2026-09-16`, ejecuta las pruebas y construye el contenedor.
+Las 13 pruebas verifican autenticación, compra y alquiler, comparación mensual, errores de entrada, abstenciones de dominio, obra nueva, ajuste 2026 por defecto, procedencia temporal e instalación desde carpeta o ZIP. GitHub Actions instala y verifica los pesos de la release `tfm-2026-09-16-r2`, ejecuta las pruebas y construye el contenedor.
 
-La comprobación del 16 de septiembre utiliza el código y los seis artefactos originales de `nuevo_modelo`, exportados el 15 de septiembre a las 22:56:50. Su informe está en [paridad_v3.json](servicio/paridad_v3.json) y se reproduce, conservando esa carpeta, con:
+La comprobación del 16 de septiembre utiliza el código y los seis artefactos originales de `habitia_predictor`, exportados el 16 de septiembre a las 11:57:54. Su informe está en [paridad_v3.json](servicio/paridad_v3.json) y se reproduce, conservando esa carpeta, con:
 
 ```bash
-python scripts/verify_reference_v3.py ../nuevo_modelo --output servicio/paridad_v3.json
+python scripts/verify_reference_v3.py ../habitia_predictor --output servicio/paridad_v3.json
 ```
 
 | Comprobación registrada | Resultado |
@@ -86,13 +86,17 @@ python scripts/verify_reference_v3.py ../nuevo_modelo --output servicio/paridad_
 
 Esta comprobación describe paridad funcional en casos sintéticos; no mide precisión predictiva. Los ejemplos y el barrido de superficie de la memoria están en [evidencia_modelo_v3.json](servicio/evidencia_modelo_v3.json).
 
-La igualdad exacta compara referencia e integración ejecutadas juntas en el mismo entorno. Entre macOS/ARM y Linux pueden variar los últimos bits de los cálculos float32 según CPU y bibliotecas numéricas. El ejemplo de 80 m² produjo 482.507,295671 € en macOS y 482.507,249227 € en Linux: 0,046444 € de diferencia, equivalente a un ULP del precio base (0,03125 €) multiplicado por el índice de venta. En renta la diferencia fue 0,000131 €/mes. Las dos pruebas contra valores guardados admiten error relativo de `2e-7` (aproximadamente dos ULP); las comprobaciones de independencia del precio anunciado y de comparación mensual conservan sus igualdades y verificaciones aritméticas. Esto no cambia los pesos, las fórmulas ni la versión del servicio.
+La igualdad exacta compara referencia e integración ejecutadas juntas en el mismo entorno. Entre macOS/ARM y Linux pueden variar los últimos bits de los cálculos float32 según CPU y bibliotecas numéricas. La verificación multiplataforma previa detectó un ULP del precio base (0,03125 € en el ejemplo de 80 m²), propagado por los factores del paquete. Las dos pruebas contra valores guardados admiten error relativo de `2e-7` (aproximadamente dos ULP); las comprobaciones de independencia del precio anunciado y de comparación mensual conservan sus igualdades y verificaciones aritméticas.
 
 ## Modelo y datos
 
-`habitIA-xgboost-2018-v3` contiene 410 árboles y 21 variables. El contrato HTTP es `3.2.0`. Estima venta de 2018 indexada a 2025 y deriva el alquiler mensual mediante ratios distritales de 2024. El dominio de la aplicación es Madrid capital, con viviendas admitidas de hasta 367 m². La exportación vigente es `2026-09-15T22:56:50`; el cambio sustituye los pesos, metadatos y tablas por los seis archivos del nuevo paquete, sin recalcular los índices. El nuevo paquete sigue usando precios de 2025 y ratios de alquiler de 2024, no índices de 2026.
+`habitIA-xgboost-2018-v3` contiene 410 árboles y 21 variables. El contrato HTTP es `3.3.0` y usa `ano_ajuste=2026` por defecto. Estima venta a partir del modelo de 2018 y aplica índices distritales proyectados a 2026; deriva el alquiler mediante ratios distritales proyectados a 2026. El dominio es Madrid capital, con viviendas admitidas de hasta 367 m². La exportación vigente es `2026-09-16T11:57:54`.
 
-Se añade abstención cuando la descripción indica vivienda a reformar/actualizar (`a_reformar`) u ocupada/alquilada/sin posesión (`ocupada`), con las negaciones y excepciones del paquete. Estas reglas se aplican también al escenario de alquiler. `newDevelopment` se devuelve como `calidad.obra_nueva` y añade una advertencia: varias viviendas de la misma promoción no son observaciones independientes. El flag no cambia el precio.
+Los últimos años observados siguen siendo 2025 para venta y 2024 para alquiler. El paquete proyecta ambos a 2026 con tendencias históricas desde 2018, y también actualiza el alquiler de barrio utilizado como entrada del modelo. **2026 es un escenario proyectado; no una nueva observación ni una validación con anuncios de 2026.** Las tablas y sus metadatos se utilizan tal como fueron recibidos; la API no vuelve a calcular ni duplica la indexación.
+
+Respecto a 3.2, se conservan exactamente los pesos, las geometrías y los puntos de interés. Cambian `indices_distrito.parquet`, `variables_barrio.parquet` y `metadatos.json`. Por eso `modelo_sha256` no cambia y la identidad completa se distingue mediante versión `3.3.0` y `paquete_sha256=043304773c081968a67703429bbe028b3f397b1ccc49f2856fa0df91e7a079fc`. El contrato devuelve además `ultimo_ano_venta=2025`, `ultimo_ano_alquiler=2024` y `ajuste_proyectado=true`. Los resultados anteriores deben recalcularse con el nuevo paquete.
+
+Se conserva la abstención cuando la descripción indica vivienda a reformar/actualizar (`a_reformar`) u ocupada/alquilada/sin posesión (`ocupada`), con las negaciones y excepciones del paquete. Estas reglas se aplican también al escenario de alquiler. `newDevelopment` se devuelve como `calidad.obra_nueva` y añade una advertencia: varias viviendas de la misma promoción no son observaciones independientes. El flag no cambia el precio.
 
 El MdAPE histórico del 9,30 % procede de los metadatos del entrenamiento y se presenta como resultado registrado. El alquiler no tiene entrenamiento ni validación independiente. No se ofrecen intervalos calibrados, SHAP ni una clasificación validada de oportunidad.
 

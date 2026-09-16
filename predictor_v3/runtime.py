@@ -12,13 +12,15 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError
 from .predictor import PredictorHabitia, RUTA_PAQUETE
 
 MODEL_ID = "habitIA-xgboost-2018-v3"
-MODEL_VERSION = "3.2.0"
+MODEL_VERSION = "3.3.0"
+ANO_AJUSTE = 2026
 MANIFEST = Path(__file__).resolve().parents[1] / "servicio" / "manifiesto_v3.json"
 WARNINGS = [
-    "Estimación de precio anunciado con datos de 2018, indexada a 2025. Precisión actual no validada.",
+    "Estimación de precio anunciado con datos de 2018 e índices proyectados a 2026. Precisión actual no validada.",
     "El paquete no incluye intervalos calibrados ni clasificación validada de barato o caro.",
     "No observa estado de conservación, condición de ático, vistas ni parcela.",
-    "La renta es un escenario derivado del precio de venta y ratios distritales de 2024; no un modelo de alquiler validado.",
+    "La renta es un escenario derivado del precio de venta y ratios distritales proyectados a 2026; no un modelo de alquiler validado.",
+    "Los últimos datos observados de los índices corresponden a venta de 2025 y alquiler de 2024; 2026 se proyecta por tendencia.",
 ]
 
 
@@ -58,6 +60,10 @@ class RuntimePredictor:
     def __init__(self, directory: Path | None = None):
         directory = directory or Path(os.getenv("VALORACION_ARTIFACTS_V3", str(RUTA_PAQUETE)))
         self.manifest = json.loads(MANIFEST.read_text())
+        bundle_hash = hashlib.sha256(json.dumps(self.manifest["sha256"], sort_keys=True,
+                                               separators=(",", ":")).encode()).hexdigest()
+        if bundle_hash != self.manifest["paquete_sha256"]:
+            raise ValueError("Identidad del paquete incompatible con el manifiesto")
         for name, expected in self.manifest["sha256"].items():
             if hashlib.sha256((directory / name).read_bytes()).hexdigest() != expected:
                 raise ValueError(f"Artefacto v3 alterado: {name}")
@@ -69,16 +75,26 @@ class RuntimePredictor:
         if (self.meta["exportado"] != self.manifest["source_exported_at"]
                 or self.predictor.modelo.get_booster().num_boosted_rounds() != self.manifest["trees"]):
             raise ValueError("Exportación o número de árboles incompatible con el manifiesto")
-        if (self.meta["ano_base"], self.meta["ano_precio"], self.meta["ano_renta"]) != (2018, 2025, 2024):
+        if any(self.meta[key] != year for key, year in self.manifest["periodos"].items()):
             raise ValueError("Periodos incompatibles con el contrato v3")
+        attrs = self.predictor.indices.attrs
+        if (attrs["ano_base"], attrs["ano_destino"], attrs["ano_renta"]) != (2018, ANO_AJUSTE, ANO_AJUSTE):
+            raise ValueError("Periodos de los índices incompatibles con el contrato v3")
+        if any(attrs[key] != self.manifest["temporalidad"][key]
+               for key in ("ultimo_ano_venta", "ultimo_ano_alquiler", "ano_inicio_tendencia")):
+            raise ValueError("Procedencia temporal de los índices incompatible con el manifiesto")
         if self.predictor.modelo.get_booster().feature_names != self.predictor.columnas:
             raise ValueError("Variables distintas entre modelo y metadatos")
+
+    def temporalidad(self):
+        return {"ano_ajuste": ANO_AJUSTE, "nivel_precios": str(self.meta["ano_precio"]),
+                **{key: self.meta[key] for key in ("ano_base", "ano_precio", "ano_renta")},
+                **self.manifest["temporalidad"], "paquete_sha256": self.manifest["paquete_sha256"]}
 
     def health(self):
         return {"ok": True, "model_id": MODEL_ID, "model_version": MODEL_VERSION,
                 "operaciones": ["sale", "rent"],
-                "variables": len(self.predictor.columnas), "nivel_precios": "2025",
-                "ano_base": 2018, "ano_precio": 2025, "ano_renta": 2024,
+                "variables": len(self.predictor.columnas), **self.temporalidad(),
                 "objetivo": "precio_anunciado", "precision_actual_validada": False,
                 "intervalos_disponibles": False, "alquiler_validado": False,
                 "modelo_sha256": self.manifest["sha256"]["modelo.json"],
@@ -163,8 +179,7 @@ class RuntimePredictor:
                 "modelo_sha256": self.manifest["sha256"]["modelo.json"],
                 "objetivo": "precio_anunciado", "periodo_entrenamiento": "2018",
                 "extrapolacion_temporal": True, "precision_actual_validada": False,
-                "clasificacion_validada": False, "nivel_precios": "2025",
-                "ano_base": 2018, "ano_precio": 2025, "ano_renta": 2024,
+                "clasificacion_validada": False, **self.temporalidad(),
                 "factor_escenario": row["indice_venta"], "precio_estimado_base": row["precio_estimado_base"],
                 "precio_estimado": price, "precio_anunciado": announced,
                 "operation": data["operation"], "precio_comparacion": comparison,
@@ -174,7 +189,7 @@ class RuntimePredictor:
                 "barrio_code": row["barrio_code"], "distrito_code": row["distrito_code"],
                 "renta_mensual_estimada": row["renta_mensual_estimada"],
                 "factor_renta_mensual": row["factor_renta_mensual"],
-                "alquiler_validado": False, "metodo_renta": "ratio_distrital_2024",
+                "alquiler_validado": False, "metodo_renta": "ratio_distrital_proyectado_2026",
                 "advertencias": warnings,
                 "calidad": {key: row[key] for key in (*marks, "fuera_de_rango")},
             })

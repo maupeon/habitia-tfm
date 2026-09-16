@@ -29,6 +29,7 @@ class Peticion(BaseModel):
     anuncios: list[Any] = Field(min_length=1, max_length=24)
     renivelar: Literal[True] = True
     explicar: bool = False
+    ano_ajuste: Literal[2026] = 2026
 
 @app.get("/salud")
 def salud(response: Response):
@@ -52,5 +53,5 @@ def valorar(p: Peticion, authorization: str | None = Header(default=None)):
         logging.exception("Error de inferencia v3")
         raise HTTPException(503, "No se pudo completar la valoración") from None
     return {"resultados": results, "errores": errors, "ms": round((time.perf_counter() - started) * 1000, 1),
-            "model_id": MODEL_ID, "model_version": MODEL_VERSION, "nivel_precios": "2025",
+            "model_id": MODEL_ID, "model_version": MODEL_VERSION, **V.temporalidad(),
             "objetivo": "precio_anunciado", "extrapolacion_temporal": True, "precision_actual_validada": False}

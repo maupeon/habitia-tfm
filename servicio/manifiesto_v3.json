@@ -1,22 +1,35 @@
 {
   "model_id": "habitIA-xgboost-2018-v3",
-  "model_version": "3.2.0",
-  "source_package": "nuevo_modelo version_paquete 3 exportado 2026-09-15T22:56:50",
+  "model_version": "3.3.0",
+  "source_package": "habitia_predictor version_paquete 3 exportado 2026-09-16T11:57:54",
   "sha256": {
-    "variables_barrio.parquet": "4a5d3dea9e804f21196eb9c4d3ed7ad5114e7c3e8f2cd9ea366779deb6918469",
+    "variables_barrio.parquet": "2ef587ae1e3c121f38503ac68fe06d224972240b75faa2c13998cf0eef62c337",
     "barrios.parquet": "4a6fa529722ec3f4aa0bae6b652e85e9de226806354bc708674b9c58812fa729",
-    "indices_distrito.parquet": "535ea99424df6e20735c67cb010153cf5713a4db0199c58375d2e7115c013379",
+    "indices_distrito.parquet": "12be67eb7f19f3d0327521ae8ea1065b3ed661e166cf3aaa8bd5f324a2acead4",
     "modelo.json": "e5526aca6001741f24eb976dbd9607df131b3822b5b5a01b66c6c92af2a9d748",
     "pois.parquet": "ef99f3e59ee22ebec4d0e7b8154010ad60cf8c48891686c1799f675af8033322",
-    "metadatos.json": "64befffab61e4e9195e10108ce2da14df92698ed50ba762f753b438baaf42032"
+    "metadatos.json": "ff21768f6dd322b244b028b9ad0621f386e2b3dec817a0b2b68f4f25c38cb1ee"
   },
   "source_code_sha256": {
     "__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "amenidades_descripcion.py": "33dc43948711b1c4de8e95f324539b704439d38f7d9ac03f2009d16d4781ba34",
-    "predictor.py": "2058942054affb124fc932146798184fc328f0598400c53be2c71befde2c8e2a",
+    "predictor.py": "c3316afc21204838dfa91f4c017eb6b74ecdde462d5c850b1bbd4f7063e6b2c7",
     "produccion.py": "a5ea12bfee2a92dfcd010b35009529d4835f0c89f149d1f28dfd3b4c369589ff",
     "rutas.py": "1504ca3067fa02bb63a324a183d3acd8255e92344bb4563e8e7d34268ee5387f"
   },
-  "source_exported_at": "2026-09-15T22:56:50",
-  "trees": 410
+  "source_exported_at": "2026-09-16T11:57:54",
+  "trees": 410,
+  "paquete_sha256": "043304773c081968a67703429bbe028b3f397b1ccc49f2856fa0df91e7a079fc",
+  "periodos": {
+    "ano_base": 2018,
+    "ano_precio": 2026,
+    "ano_renta": 2026,
+    "ano_alquiler_barrio": 2026
+  },
+  "temporalidad": {
+    "ultimo_ano_venta": 2025,
+    "ultimo_ano_alquiler": 2024,
+    "ano_inicio_tendencia": 2018,
+    "ajuste_proyectado": true
+  }
 }

@@ -1,11 +1,12 @@
 """Compara la integración con el código y los artefactos del paquete recibido.
 
-Uso: python scripts/verify_reference_v3.py ../nuevo_modelo --output servicio/paridad_v3.json
+Uso: python scripts/verify_reference_v3.py ../habitia_predictor --output servicio/paridad_v3.json
 Los casos son sintéticos; esta prueba no evalúa precisión predictiva.
 """
 import argparse
 import hashlib
 import importlib
+import inspect
 import json
 from pathlib import Path
 import platform
@@ -38,8 +39,12 @@ def main():
             if hashlib.sha256((folder / name).read_bytes()).hexdigest() != expected:
                 raise ValueError(f"Referencia distinta del manifiesto: {name}")
     sys.path.insert(0, str(source))
-    original = importlib.import_module("src.predictor").PredictorHabitia.cargar(
-        source / "data/models/paquete_produccion")
+    module = importlib.import_module("src.predictor")
+    assert module.ANO_PRODUCCION == 2026
+    defaults = inspect.signature(module.exportar_paquete).parameters
+    assert defaults["ano_destino"].default == defaults["ano_renta"].default == 2026
+    original = module.PredictorHabitia.cargar()
+    assert original.metadatos["ano_precio"] == original.metadatos["ano_renta"] == 2026
     original.modelo.set_params(n_jobs=1)
     points = original.barrios.geometry.representative_point().to_crs(4326)
     records = [{**BASE, "propertyCode": f"barrio-{i}", "latitude": float(point.y),
@@ -88,6 +93,7 @@ def main():
         assert response["calidad"]["obra_nueva"] == row["obra_nueva"]
     result = {"model_version": runtime.health()["model_version"],
               "modelo_sha256": runtime.manifest["sha256"]["modelo.json"],
+              **runtime.temporalidad(), "ano_por_defecto_referencia_verificado": True,
               "source_exported_at": runtime.meta["exportado"],
               "poligonos": len(points), "casos_limite": len(edge_cases), "total": len(records),
               "validos": len(outputs), "abstenciones": len(errors),
