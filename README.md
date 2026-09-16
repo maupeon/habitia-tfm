@@ -8,7 +8,7 @@ Este repositorio contiene el predictor XGBoost integrado, la API Python, su inst
 
 ## Entrega
 
-La [entrega actualizada del 16 de septiembre de 2026](https://github.com/maupeon/habitia-tfm/releases/tag/tfm-2026-09-16-r2) contiene:
+La [entrega actualizada del 16 de septiembre de 2026](https://github.com/maupeon/habitia-tfm/releases/tag/tfm-2026-09-16-r3) contiene:
 
 - Memoria en PDF y Word, con portada UCM y resultados del nuevo modelo.
 - Anexos en PDF y Word con datos del modelo, contrato y reproducción de la inferencia.
@@ -16,7 +16,7 @@ La [entrega actualizada del 16 de septiembre de 2026](https://github.com/maupeon
 - `04_modelo/habitia-modelo-v3.3.zip`: los seis artefactos necesarios para ejecutar el modelo.
 - Instrucciones, versiones y sumas SHA-256.
 
-**[Descargar el ZIP completo](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-16-r2/HabitIA_TFM_2026-09-16.zip)** · [Memoria PDF](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-16-r2/01_HabitIA_memoria.pdf) · [Anexos PDF](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-16-r2/02_HabitIA_anexos.pdf)
+**[Descargar el ZIP completo](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-16-r3/HabitIA_TFM_2026-09-16-r3.zip)** · [Memoria PDF](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-16-r3/01_HabitIA_memoria.pdf) · [Anexos PDF](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-16-r3/02_HabitIA_anexos.pdf)
 
 Los repositorios y la release de entrega son públicos y se pueden consultar sin iniciar sesión en GitHub. El ZIP permite descargar el código y los artefactos para revisarlos localmente. `VERSIONES.json` identifica los commits incluidos y `SHA256SUMS.txt` verifica los archivos. La revisión vigente se identifica en VERSIONES.json.
 
@@ -50,7 +50,7 @@ python -m uvicorn servicio.api_v3:app --host 127.0.0.1 --port 8000 --workers 1
 También se puede descargar el modelo con GitHub CLI autenticado:
 
 ```bash
-gh release download tfm-2026-09-16-r2 --repo maupeon/habitia-tfm --pattern habitia-modelo-v3.3.zip
+gh release download tfm-2026-09-16-r3 --repo maupeon/habitia-tfm --pattern habitia-modelo-v3.3.zip
 ```
 
 `GET /salud` comprueba la carga del modelo. Para conectar la web, configurar `VALORACION_URL=http://127.0.0.1:8000` y el mismo `VALORACION_TOKEN` en el servidor Next.js. Utilizar una credencial privada al publicar el servicio. [Contrato de la API, ejemplo de petición y despliegue](servicio/README_v3.md).
@@ -67,7 +67,9 @@ python -m unittest discover -s tests_v3 -v
 python scripts/install_predictor_v3.py --check
 ```
 
-Las 13 pruebas verifican autenticación, compra y alquiler, comparación mensual, errores de entrada, abstenciones de dominio, obra nueva, ajuste 2026 por defecto, procedencia temporal e instalación desde carpeta o ZIP. GitHub Actions instala y verifica los pesos de la release `tfm-2026-09-16-r2`, ejecuta las pruebas y construye el contenedor.
+Las 21 pruebas verifican autenticación, compra y alquiler, comparación mensual, errores de entrada, abstenciones de dominio, obra nueva, ajuste 2026 por defecto, procedencia temporal e instalación desde carpeta o ZIP. Incluyen el rechazo de peticiones sin un token configurado, el aislamiento de entradas numéricas desmesuradas y la recuperación de la instalación ante un fallo de sustitución. GitHub Actions instala y verifica los pesos de la release `tfm-2026-09-16-r2`, ejecuta las pruebas y construye el contenedor. Esa fuente de CI se conserva inmutable: sus seis artefactos son idénticos a los incluidos en r3.
+
+La [auditoría de dependencias Python](servicio/auditoria_dependencias_v3.json) con pip-audit 2.10.1 no detectó vulnerabilidades conocidas en las 30 dependencias resueltas de producción ni en los 33 paquetes del entorno local revisado. El informe conserva las versiones y la fecha de la consulta.
 
 La comprobación del 16 de septiembre utiliza el código y los seis artefactos originales de `habitia_predictor`, exportados el 16 de septiembre a las 11:57:54. Su informe está en [paridad_v3.json](servicio/paridad_v3.json) y se reproduce, conservando esa carpeta, con:
 
@@ -87,6 +89,10 @@ python scripts/verify_reference_v3.py ../habitia_predictor --output servicio/par
 Esta comprobación describe paridad funcional en casos sintéticos; no mide precisión predictiva. Los ejemplos y el barrido de superficie de la memoria están en [evidencia_modelo_v3.json](servicio/evidencia_modelo_v3.json).
 
 La igualdad exacta compara referencia e integración ejecutadas juntas en el mismo entorno. Entre macOS/ARM y Linux pueden variar los últimos bits de los cálculos float32 según CPU y bibliotecas numéricas. La verificación multiplataforma previa detectó un ULP del precio base (0,03125 € en el ejemplo de 80 m²), propagado por los factores del paquete. Las dos pruebas contra valores guardados admiten error relativo de `2e-7` (aproximadamente dos ULP); las comprobaciones de independencia del precio anunciado y de comparación mensual conservan sus igualdades y verificaciones aritméticas.
+
+## Preparar una nueva entrega
+
+`python scripts/build_delivery.py --help` muestra los argumentos del empaquetador. Requiere ambos repositorios con los cambios confirmados en Git, los cuatro documentos revisados, los informes publicables y la carpeta original `habitia_predictor`. Extrae el código con `git archive`, contrasta los seis artefactos y los cinco módulos originales con el manifiesto y genera `VERSIONES.json`, `SHA256SUMS.txt` y el ZIP. Incluye el paquete original para poder repetir la paridad. Rechaza una revisión ya existente y no publica archivos por sí mismo.
 
 ## Modelo y datos
 

@@ -38,14 +38,16 @@ class ParkingSpace(StrictRecord):
 
 
 class Anuncio(StrictRecord):
-    propertyCode: str = Field(min_length=1, max_length=80)
+    propertyCode: str = Field(min_length=1, max_length=80, pattern=r"\S")
     operation: Literal["sale", "rent"]
     municipality: str = Field(max_length=120)
     propertyType: str = Field(max_length=80)
     price: float | None = Field(default=None, gt=0)
     size: float | None = None
-    rooms: int | None = None
-    bathrooms: int | None = None
+    # Límite de representación, no de dominio: las cifras fuera del rango de
+    # entrenamiento siguen generando una advertencia, sin desbordar pandas/XGBoost.
+    rooms: int | None = Field(default=None, ge=0, le=2**31 - 1)
+    bathrooms: int | None = Field(default=None, ge=0, le=2**31 - 1)
     latitude: float | None = None
     longitude: float | None = None
     floor: str | None = Field(default=None, max_length=20)
@@ -58,7 +60,8 @@ class Anuncio(StrictRecord):
 
 class RuntimePredictor:
     def __init__(self, directory: Path | None = None):
-        directory = directory or Path(os.getenv("VALORACION_ARTIFACTS_V3", str(RUTA_PAQUETE)))
+        directory = Path(directory) if directory is not None else Path(
+            os.getenv("VALORACION_ARTIFACTS_V3") or RUTA_PAQUETE)
         self.manifest = json.loads(MANIFEST.read_text())
         bundle_hash = hashlib.sha256(json.dumps(self.manifest["sha256"], sort_keys=True,
                                                separators=(",", ":")).encode()).hexdigest()
@@ -108,6 +111,8 @@ class RuntimePredictor:
             a = Anuncio.model_validate(raw)
         except ValidationError as error:
             fields = sorted({str(e["loc"][0]) for e in error.errors() if e["loc"]})
+            if not fields:
+                return None, ("datos_insuficientes", "Cada anuncio debe ser un objeto JSON.")
             return None, ("datos_insuficientes", "Revisa los campos requeridos y sus tipos: " + ", ".join(fields))
         subtype = a.detailedType.subTypology if a.detailedType else None
         typology = a.detailedType.typology if a.detailedType else None

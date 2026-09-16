@@ -1,0 +1,345 @@
+{
+  "verificado_utc": "2026-09-16T12:02:35.148919+00:00",
+  "herramienta": "pip-audit 2.10.1",
+  "fuente_avisos": "PyPI Advisory Database (servicio predeterminado de pip-audit)",
+  "alcance": "Consulta de vulnerabilidades conocidas de dependencias Python en la fecha indicada; no certifica ausencia de fallos en el código ni evalúa precisión del modelo.",
+  "comprobaciones": [
+    {
+      "alcance": "dependencias_resueltas_de_requirements",
+      "comando": "uvx --python 3.12 pip-audit -r servicio/requirements_v3.txt --format json",
+      "dependencias_auditadas": 30,
+      "vulnerabilidades_conocidas": 0,
+      "resultado": {
+        "dependencies": [
+          {
+            "name": "numpy",
+            "version": "2.5.0",
+            "vulns": []
+          },
+          {
+            "name": "pandas",
+            "version": "3.0.0",
+            "vulns": []
+          },
+          {
+            "name": "pyarrow",
+            "version": "24.0.0",
+            "vulns": []
+          },
+          {
+            "name": "geopandas",
+            "version": "1.1.2",
+            "vulns": []
+          },
+          {
+            "name": "xgboost",
+            "version": "3.4.1",
+            "vulns": []
+          },
+          {
+            "name": "scikit-learn",
+            "version": "1.9.1",
+            "vulns": []
+          },
+          {
+            "name": "fastapi",
+            "version": "0.141.1",
+            "vulns": []
+          },
+          {
+            "name": "pydantic",
+            "version": "2.13.5",
+            "vulns": []
+          },
+          {
+            "name": "uvicorn",
+            "version": "0.52.4",
+            "vulns": []
+          },
+          {
+            "name": "pydantic-core",
+            "version": "2.46.5",
+            "vulns": []
+          },
+          {
+            "name": "annotated-doc",
+            "version": "0.0.5",
+            "vulns": []
+          },
+          {
+            "name": "annotated-types",
+            "version": "0.8.0",
+            "vulns": []
+          },
+          {
+            "name": "click",
+            "version": "8.5.0",
+            "vulns": []
+          },
+          {
+            "name": "h11",
+            "version": "0.16.0",
+            "vulns": []
+          },
+          {
+            "name": "joblib",
+            "version": "1.6.0",
+            "vulns": []
+          },
+          {
+            "name": "cloudpickle",
+            "version": "3.1.2",
+            "vulns": []
+          },
+          {
+            "name": "narwhals",
+            "version": "2.26.0",
+            "vulns": []
+          },
+          {
+            "name": "pyogrio",
+            "version": "0.13.0",
+            "vulns": []
+          },
+          {
+            "name": "pyproj",
+            "version": "3.8.0",
+            "vulns": []
+          },
+          {
+            "name": "python-dateutil",
+            "version": "2.9.0.post0",
+            "vulns": []
+          },
+          {
+            "name": "scipy",
+            "version": "1.18.1",
+            "vulns": []
+          },
+          {
+            "name": "shapely",
+            "version": "2.1.2",
+            "vulns": []
+          },
+          {
+            "name": "six",
+            "version": "1.17.0",
+            "vulns": []
+          },
+          {
+            "name": "starlette",
+            "version": "1.6.0",
+            "vulns": []
+          },
+          {
+            "name": "anyio",
+            "version": "4.15.1",
+            "vulns": []
+          },
+          {
+            "name": "idna",
+            "version": "3.19",
+            "vulns": []
+          },
+          {
+            "name": "threadpoolctl",
+            "version": "3.7.0",
+            "vulns": []
+          },
+          {
+            "name": "typing-extensions",
+            "version": "4.16.0",
+            "vulns": []
+          },
+          {
+            "name": "typing-inspection",
+            "version": "0.4.4",
+            "vulns": []
+          },
+          {
+            "name": "certifi",
+            "version": "2026.7.22",
+            "vulns": []
+          }
+        ],
+        "fixes": []
+      }
+    },
+    {
+      "alcance": "entorno_local_completo",
+      "comando": "uv pip freeze --python .venv-v3/bin/python > /tmp/habitia-installed-requirements.txt; uvx --python 3.12 pip-audit -r /tmp/habitia-installed-requirements.txt --no-deps --disable-pip --format json",
+      "dependencias_auditadas": 33,
+      "vulnerabilidades_conocidas": 0,
+      "resultado": {
+        "dependencies": [
+          {
+            "name": "annotated-doc",
+            "version": "0.0.5",
+            "vulns": []
+          },
+          {
+            "name": "annotated-types",
+            "version": "0.8.0",
+            "vulns": []
+          },
+          {
+            "name": "anyio",
+            "version": "4.15.1",
+            "vulns": []
+          },
+          {
+            "name": "certifi",
+            "version": "2026.7.22",
+            "vulns": []
+          },
+          {
+            "name": "click",
+            "version": "8.5.0",
+            "vulns": []
+          },
+          {
+            "name": "cloudpickle",
+            "version": "3.1.2",
+            "vulns": []
+          },
+          {
+            "name": "fastapi",
+            "version": "0.141.1",
+            "vulns": []
+          },
+          {
+            "name": "geopandas",
+            "version": "1.1.2",
+            "vulns": []
+          },
+          {
+            "name": "h11",
+            "version": "0.16.0",
+            "vulns": []
+          },
+          {
+            "name": "httpcore",
+            "version": "1.0.9",
+            "vulns": []
+          },
+          {
+            "name": "httpx",
+            "version": "0.28.1",
+            "vulns": []
+          },
+          {
+            "name": "idna",
+            "version": "3.19",
+            "vulns": []
+          },
+          {
+            "name": "joblib",
+            "version": "1.6.0",
+            "vulns": []
+          },
+          {
+            "name": "narwhals",
+            "version": "2.26.0",
+            "vulns": []
+          },
+          {
+            "name": "numpy",
+            "version": "2.5.0",
+            "vulns": []
+          },
+          {
+            "name": "packaging",
+            "version": "26.3",
+            "vulns": []
+          },
+          {
+            "name": "pandas",
+            "version": "3.0.0",
+            "vulns": []
+          },
+          {
+            "name": "pyarrow",
+            "version": "24.0.0",
+            "vulns": []
+          },
+          {
+            "name": "pydantic",
+            "version": "2.13.5",
+            "vulns": []
+          },
+          {
+            "name": "pydantic-core",
+            "version": "2.46.5",
+            "vulns": []
+          },
+          {
+            "name": "pyogrio",
+            "version": "0.13.0",
+            "vulns": []
+          },
+          {
+            "name": "pyproj",
+            "version": "3.8.0",
+            "vulns": []
+          },
+          {
+            "name": "python-dateutil",
+            "version": "2.9.0.post0",
+            "vulns": []
+          },
+          {
+            "name": "scikit-learn",
+            "version": "1.9.1",
+            "vulns": []
+          },
+          {
+            "name": "scipy",
+            "version": "1.18.1",
+            "vulns": []
+          },
+          {
+            "name": "shapely",
+            "version": "2.1.2",
+            "vulns": []
+          },
+          {
+            "name": "six",
+            "version": "1.17.0",
+            "vulns": []
+          },
+          {
+            "name": "starlette",
+            "version": "1.6.0",
+            "vulns": []
+          },
+          {
+            "name": "threadpoolctl",
+            "version": "3.7.0",
+            "vulns": []
+          },
+          {
+            "name": "typing-extensions",
+            "version": "4.16.0",
+            "vulns": []
+          },
+          {
+            "name": "typing-inspection",
+            "version": "0.4.4",
+            "vulns": []
+          },
+          {
+            "name": "uvicorn",
+            "version": "0.52.4",
+            "vulns": []
+          },
+          {
+            "name": "xgboost",
+            "version": "3.4.1",
+            "vulns": []
+          }
+        ],
+        "fixes": []
+      }
+    }
+  ]
+}

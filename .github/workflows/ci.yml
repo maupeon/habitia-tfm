@@ -20,6 +20,7 @@ jobs:
           GH_REPO: ${{ github.repository }}
         run: |
           # Paquete de 410 árboles exportado el 16/09/2026; proyección a 2026; hashes en el manifiesto.
+          # Fuente inmutable de CI: r3 reutiliza estos mismos seis artefactos sin cambiar sus hashes.
           gh release download tfm-2026-09-16-r2 --pattern habitia-modelo-v3.3.zip
           python scripts/install_predictor_v3.py habitia-modelo-v3.3.zip
           python scripts/install_predictor_v3.py --check

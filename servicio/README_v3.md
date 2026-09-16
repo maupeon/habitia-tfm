@@ -8,14 +8,14 @@ Requiere Python >=3.12 y las dependencias fijadas en `requirements_v3.txt`, incl
 python3.12 -m venv .venv-v3
 source .venv-v3/bin/activate
 python -m pip install -r servicio/requirements_v3.txt
-curl -fL -o habitia-modelo-v3.3.zip https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-16-r2/habitia-modelo-v3.3.zip
+curl -fL -o habitia-modelo-v3.3.zip https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-16-r3/habitia-modelo-v3.3.zip
 python scripts/install_predictor_v3.py habitia-modelo-v3.3.zip
 python scripts/install_predictor_v3.py --check
 export VALORACION_TOKEN=un-token-local-propio
 python -m uvicorn servicio.api_v3:app --host 127.0.0.1 --port 8000 --workers 1
 ```
 
-El ZIP se descarga de la [release pública del 16 de septiembre](https://github.com/maupeon/habitia-tfm/releases/tag/tfm-2026-09-16-r2), sin iniciar sesión en GitHub. También está en `04_modelo/` dentro de la entrega completa. Se puede instalar la carpeta recibida con `python scripts/install_predictor_v3.py ../habitia_predictor`; también se acepta la carpeta que contiene directamente los seis artefactos. El instalador verifica todos los hashes antes de reemplazar archivos existentes. Los archivos se instalan en `servicio/artefactos_v3`; `VALORACION_ARTIFACTS_V3` permite cambiar la carpeta. En producción utiliza un token privado. La inferencia local se ejecuta con los artefactos instalados, sin consultar Idealista.
+El ZIP se descarga de la [release pública del 16 de septiembre](https://github.com/maupeon/habitia-tfm/releases/tag/tfm-2026-09-16-r3), sin iniciar sesión en GitHub. También está en `04_modelo/` dentro de la entrega completa. Se puede instalar la carpeta recibida con `python scripts/install_predictor_v3.py ../habitia_predictor`; también se acepta la carpeta que contiene directamente los seis artefactos. El instalador verifica todos los hashes antes de sustituir la carpeta y restaura la instalación anterior si falla la sustitución. Rechaza destinos con archivos ajenos al paquete para conservarlos. Los archivos se instalan en `servicio/artefactos_v3`; `VALORACION_ARTIFACTS_V3` cambia la carpeta tanto en instalación y `--check` como en la API. El argumento `--target` permite indicar el destino de una ejecución del instalador. Configura un token privado: si `VALORACION_TOKEN` está vacío o ausente, `/valorar` responde 503 y no ejecuta inferencia. La inferencia local se ejecuta con los artefactos instalados, sin consultar Idealista.
 
 ## Petición y respuesta
 
@@ -38,7 +38,7 @@ POST `/valorar`, con `Authorization: Bearer <token>`:
 }
 ```
 
-`ano_ajuste` es opcional y vale 2026 por defecto; se acepta 2026 explícitamente y otro año devuelve 422. El paquete contiene las tablas ya fijadas a 2026 y no se reexporta durante las peticiones.
+`ano_ajuste` es opcional y vale 2026 por defecto; se acepta 2026 explícitamente como entero y otro año devuelve 422. Las opciones tienen tipos estrictos: `renivelar` debe ser el booleano `true`, no el número `1`, y `ano_ajuste` no acepta texto ni decimales. Las opciones desconocidas devuelven 422. El paquete contiene las tablas ya fijadas a 2026 y no se reexporta durante las peticiones.
 
 Máximo 24 anuncios, con tipos estrictos. Se aceptan operaciones `sale` y `rent`, incluso en el mismo lote. Para alquiler, `price` es la mensualidad en euros. Se aceptan flat, penthouse, duplex y studio, además de homes con detailedType.typology=flat. Se excluyen subtipos de casa, otros municipios, coordenadas inválidas y superficies superiores a 367 m². El barrio se asigna con la capa incluida y permite rescate hasta 500 m, identificado con una advertencia.
 
@@ -46,7 +46,7 @@ Las descripciones que indican una vivienda a reformar/actualizar (`a_reformar`) 
 
 `newDevelopment` es booleano opcional; ausente o null se interpreta como false. Se expone en `calidad.obra_nueva` junto a una advertencia de dependencia entre viviendas de una promoción. No es una variable adicional ni modifica el precio. El resto de marcas de calidad mantiene su significado.
 
-Cada fila se valida antes del cálculo geográfico. El precio anunciado no entra en las variables y puede omitirse; en ese caso la brecha es null. La respuesta identifica `habitIA-xgboost-2018-v3`, versión `3.3.0`, periodos, códigos territoriales y advertencias, junto con `precio_estimado`, `precio_estimado_base`, `factor_escenario`, `precio_anunciado` y `brecha_pct`.
+Cada fila se valida antes del cálculo geográfico. `propertyCode` debe contener algún carácter distinto de un espacio; habitaciones y baños son enteros no negativos de hasta 32 bits. Una fila inválida se devuelve en `errores` sin impedir las estimaciones de las demás. El precio anunciado no entra en las variables y puede omitirse; en ese caso la brecha es null. La respuesta identifica `habitIA-xgboost-2018-v3`, versión `3.3.0`, periodos, códigos territoriales y advertencias, junto con `precio_estimado`, `precio_estimado_base`, `factor_escenario`, `precio_anunciado` y `brecha_pct`.
 
 `operation` conserva la operación observada. `precio_estimado` siempre contiene el valor de venta indexado; `precio_comparacion` toma ese valor para venta (`unidad_comparacion=EUR`) y `renta_mensual_estimada` para alquiler (`unidad_comparacion=EUR/mes`). `brecha_pct` compara el anuncio con la magnitud correspondiente. Estos campos se conservan desde el contrato 3.1, y las abstenciones por descripción y `calidad.obra_nueva` desde 3.2. El contrato 3.3 sustituye las tablas por la exportación proyectada a 2026 y añade la identidad del paquete y procedencia temporal.
 
@@ -65,11 +65,23 @@ docker build -f servicio/Dockerfile.v3 -t habitia-valoracion:v3 .
 docker run --rm -p 8000:8000 -e VALORACION_TOKEN habitia-valoracion:v3
 ```
 
-El [README del repositorio](../README.md#verificación) documenta la igualdad de resultados entre la implementación de referencia y el servicio ejecutados en el mismo entorno, en 131 anuncios sintéticos de los polígonos y 21 casos límite (152 en total). Las pruebas verifican autenticación, lotes mixtos de venta y alquiler, comparación de mensualidades, errores, dominios y ausencia del precio anunciado entre los predictores. Las 13 pruebas también verifican obra nueva, nuevas abstenciones, negaciones e integridad de instalación. No recalculan métricas de test.
+Desde la raíz del repositorio, una cuenta autorizada en Fly puede publicar con el constructor remoto, sin necesitar un daemon de Docker local:
+
+```bash
+python scripts/install_predictor_v3.py --check
+fly secrets list --app habitia-valoracion
+fly deploy --remote-only --ha=false --app habitia-valoracion
+fly checks list --app habitia-valoracion
+curl -f https://habitia-valoracion.fly.dev/salud
+```
+
+Antes del despliegue, `VALORACION_TOKEN` debe figurar entre los secretos de Fly y coincidir con el configurado en la web. No se debe incluir su valor en el repositorio. Tras publicar, comprobar `ok=true`, `model_version=3.3.0` y el `paquete_sha256` del manifiesto.
+
+El [README del repositorio](../README.md#verificación) documenta la igualdad de resultados entre la implementación de referencia y el servicio ejecutados en el mismo entorno, en 131 anuncios sintéticos de los polígonos y 21 casos límite (152 en total). Las pruebas verifican autenticación, lotes mixtos de venta y alquiler, comparación de mensualidades, errores, dominios y ausencia del precio anunciado entre los predictores. Las 21 pruebas también verifican obra nueva, nuevas abstenciones, negaciones e integridad de instalación. No recalculan métricas de test.
 
 Los cálculos float32 pueden variar en sus últimos bits entre CPU y bibliotecas de distintas plataformas. Solo las dos aserciones contra importes guardados usan tolerancia relativa `2e-7`; una verificación multiplataforma previa detectó una diferencia de un ULP del precio base, propagado por los factores del paquete. La paridad exacta con la referencia se verifica dentro del mismo proceso/entorno, y las comprobaciones aritméticas de compra y alquiler se mantienen sin relajar.
 
-GitHub Actions descarga el paquete de la release y verifica sus hashes antes de ejecutar las 13 pruebas. La memoria y los anexos describen las variables, la metodología de verificación y el alcance de la evaluación.
+GitHub Actions descarga el paquete de la release r2 y verifica sus hashes antes de ejecutar las 21 pruebas. Es la misma identidad de seis artefactos que r3; mantener esta fuente permite verificar cambios antes de publicar una nueva entrega. Las pruebas incluyen autenticación sin configurar, tipos estrictos, entradas desmesuradas, rechazo de pesos alterados, destino personalizado y recuperación de una instalación fallida. La memoria y los anexos describen las variables, la metodología de verificación y el alcance de la evaluación.
 
 ## Procedencia de la integración 3.3
 
@@ -81,4 +93,4 @@ Los atributos de los Parquet fijan los últimos años observados en 2025 (venta)
 
 La integración conserva únicamente las funciones necesarias para inferencia: adapta rutas e importaciones, excluye exportación/entrenamiento y consultas a fuentes crudas, valida tipos/coordenadas antes del cálculo, evita predecir filas inválidas y mantiene la extensión de alquiler con comparación mensual. Los patrones de abstención usan grupos sin captura para evitar advertencias de pandas sin cambiar su detección; las 21 variables, la corrección de smearing y los cálculos de precio coinciden con la referencia. El script de paridad verifica además que `ANO_PRODUCCION`, los argumentos por defecto de `exportar_paquete` y la carga sin argumentos del paquete original apuntan a 2026.
 
-La release `tfm-2026-09-16-r2` utiliza el archivo `habitia-modelo-v3.3.zip`; la release y el artefacto de 3.2 permanecen disponibles para reproducir esa versión anterior.
+La release `tfm-2026-09-16-r3` utiliza el archivo `habitia-modelo-v3.3.zip`, con los mismos seis artefactos de r2. Las releases anteriores y el artefacto de 3.2 permanecen disponibles para reproducir esas versiones.

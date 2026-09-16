@@ -36,6 +36,18 @@ class ValidationTests(unittest.TestCase):
         self.assertEqual(row["description"], BASE["description"])
         self.assertIsNone(RuntimePredictor.validate({**BASE, "operation": "rent", "price": 1500})[1])
 
+    def test_numeric_overflow_and_empty_identity_are_rejected_before_inference(self):
+        for changes in ({"rooms": 10**400}, {"bathrooms": 10**400}, {"propertyCode": " \t "}):
+            with self.subTest(field=next(iter(changes))):
+                data, error = RuntimePredictor.validate({**BASE, **changes})
+                self.assertIsNone(data)
+                self.assertEqual(error[0], "datos_insuficientes")
+        for raw in (None, False, 123, [], "anuncio"):
+            with self.subTest(raw=raw):
+                data, error = RuntimePredictor.validate(raw)
+                self.assertIsNone(data)
+                self.assertIn("objeto JSON", error[1])
+
 @unittest.skipUnless(RUTA_PAQUETE.exists(), "Instala los artefactos v3 para las pruebas de integración")
 class IntegrationTests(unittest.TestCase):
     @classmethod
@@ -189,6 +201,52 @@ class IntegrationTests(unittest.TestCase):
             self.assertEqual(bad.status_code, 200)
             self.assertEqual(bad.json()["resultados"], [])
             json.dumps(bad.json(), allow_nan=False)
+
+    def test_http_fails_closed_when_token_is_missing(self):
+        from fastapi.testclient import TestClient
+        from servicio.api_v3 import app
+        with patch.dict(os.environ, {}, clear=True), TestClient(app) as client:
+            for token in (None, "", "   "):
+                with self.subTest(token=token):
+                    if token is not None:
+                        os.environ["VALORACION_TOKEN"] = token
+                    response = client.post("/valorar", json={"anuncios": [BASE]})
+                    self.assertEqual(response.status_code, 503)
+                    self.assertNotIn("resultados", response.json())
+
+    def test_http_strict_options_and_isolated_invalid_rows(self):
+        from fastapi.testclient import TestClient
+        from servicio.api_v3 import app
+        with patch.dict(os.environ, {"VALORACION_TOKEN": "synthetic-test-token"}), TestClient(app) as client:
+            headers = {"Authorization": "Bearer synthetic-test-token"}
+            for options in ({"renivelar": 1}, {"renivelar": False}, {"ano_ajuste": 2026.0},
+                            {"ano_ajuste": "2026"}, {"ano_ajuste": True}, {"ano_ajust": 2025}):
+                with self.subTest(options=options):
+                    response = client.post("/valorar", json={"anuncios": [BASE], **options}, headers=headers)
+                    self.assertEqual(response.status_code, 422)
+            for body in ('{"anuncios":[{}],"ano_ajuste":NaN}', '{"anuncios":[{}],"ano_ajuste":Infinity}',
+                         '{"anuncios":[{}],"renivelar":NaN}', '{"anuncios":[{}],"explicar":Infinity}',
+                         'NaN', '{"anuncios":Infinity}'):
+                with self.subTest(body=body):
+                    response = client.post("/valorar", content=body, headers={**headers, "Content-Type": "application/json"})
+                    self.assertEqual(response.status_code, 422)
+                    json.dumps(response.json(), allow_nan=False)
+            response = client.post("/valorar", json={"anuncios": [
+                BASE, {**BASE, "propertyCode": "oversized", "rooms": 10**400}, None,
+            ]}, headers=headers)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual([row["propertyCode"] for row in response.json()["resultados"]], [BASE["propertyCode"]])
+            self.assertEqual([error["indice"] for error in response.json()["errores"]], [1, 2])
+
+    def test_startup_rejects_modified_artifacts(self):
+        import tempfile
+        from shutil import copytree
+        with tempfile.TemporaryDirectory() as temporary:
+            destination = Path(temporary) / "artifacts"
+            copytree(RUTA_PAQUETE, destination)
+            (destination / "modelo.json").write_text("{}")
+            with self.assertRaisesRegex(ValueError, "Artefacto v3 alterado: modelo.json"):
+                RuntimePredictor(destination)
 
 if __name__ == "__main__":
     unittest.main()

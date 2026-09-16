@@ -1,5 +1,6 @@
 import hashlib
 import json
+import os
 from pathlib import Path
 import tempfile
 import unittest
@@ -48,6 +49,50 @@ class InstallerTests(unittest.TestCase):
         (self.artifacts / "pois.parquet").write_bytes(b"changed")
         with self.assertRaisesRegex(ValueError, "Hash incorrecto: pois.parquet"):
             self.run_installer(self.artifacts)
+        self.run_installer("--check")
+
+    def test_custom_target_and_environment_are_used_for_install_and_check(self):
+        destination = Path(self.temp.name) / "custom"
+        with patch.dict(os.environ, {"VALORACION_ARTIFACTS_V3": str(destination)}):
+            self.run_installer(self.source)
+            self.run_installer("--check")
+            self.assertEqual(set(p.name for p in destination.iterdir()), set(self.payloads))
+            override = Path(self.temp.name) / "override"
+            self.run_installer(self.source, "--target", override)
+            self.run_installer("--check", "--target", override)
+
+    def test_ambiguous_zip_never_replaces_existing_artifacts(self):
+        self.run_installer(self.source)
+        archive = Path(self.temp.name) / "ambiguous.zip"
+        with zipfile.ZipFile(archive, "w") as zipped:
+            for name, data in self.payloads.items():
+                zipped.writestr("paquete/" + name, data)
+            zipped.writestr("duplicado/modelo.json", b"modelo.json")
+        with self.assertRaisesRegex(ValueError, "Archivo ausente o ambiguo: modelo.json"):
+            self.run_installer(archive)
+        self.run_installer("--check")
+
+    def test_failed_replacement_restores_previous_installation(self):
+        self.run_installer(self.source)
+        rename = Path.rename
+
+        def fail_new_directory(path, target):
+            if path.name == "nuevo":
+                raise OSError("fallo de sustitución simulado")
+            return rename(path, target)
+
+        with patch.object(Path, "rename", fail_new_directory):
+            with self.assertRaisesRegex(OSError, "fallo de sustitución simulado"):
+                self.run_installer(self.source)
+        self.run_installer("--check")
+
+    def test_unrelated_files_in_target_are_preserved(self):
+        self.run_installer(self.source)
+        unrelated = self.root / "servicio/artefactos_v3/notas.txt"
+        unrelated.write_text("no pertenece al modelo")
+        with self.assertRaisesRegex(ValueError, "archivos ajenos al paquete"):
+            self.run_installer(self.source)
+        self.assertEqual(unrelated.read_text(), "no pertenece al modelo")
         self.run_installer("--check")
 
 
