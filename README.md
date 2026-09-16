@@ -79,12 +79,14 @@ python scripts/verify_reference_v3.py ../nuevo_modelo --output servicio/paridad_
 | --- | --- |
 | Anuncios sintéticos en los 131 polígonos | 131 válidos de 131 |
 | Casos límite adicionales | 21; 10 válidos y 11 abstenciones |
-| Valores de las 21 variables, estados y salidas nativas | Iguales a la referencia |
-| Diferencia máxima nativa en venta base, venta indexada y renta | 0 € |
+| Valores de las 21 variables, estados y salidas nativas | Iguales a la referencia en el mismo entorno |
+| Diferencia máxima nativa en venta base, venta indexada y renta, mismo entorno | 0 € |
 | Diferencia máxima tras serializar la respuesta | 5,82 × 10⁻¹¹ € (tolerancia 10⁻⁸ €) |
 | SHA-256 del modelo | `e5526aca6001741f24eb976dbd9607df131b3822b5b5a01b66c6c92af2a9d748` |
 
 Esta comprobación describe paridad funcional en casos sintéticos; no mide precisión predictiva. Los ejemplos y el barrido de superficie de la memoria están en [evidencia_modelo_v3.json](servicio/evidencia_modelo_v3.json).
+
+La igualdad exacta compara referencia e integración ejecutadas juntas en el mismo entorno. Entre macOS/ARM y Linux pueden variar los últimos bits de los cálculos float32 según CPU y bibliotecas numéricas. El ejemplo de 80 m² produjo 482.507,295671 € en macOS y 482.507,249227 € en Linux: 0,046444 € de diferencia, equivalente a un ULP del precio base (0,03125 €) multiplicado por el índice de venta. En renta la diferencia fue 0,000131 €/mes. Las dos pruebas contra valores guardados admiten error relativo de `2e-7` (aproximadamente dos ULP); las comprobaciones de independencia del precio anunciado y de comparación mensual conservan sus igualdades y verificaciones aritméticas. Esto no cambia los pesos, las fórmulas ni la versión del servicio.
 
 ## Modelo y datos
 

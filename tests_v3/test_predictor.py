@@ -14,6 +14,11 @@ BASE = dict(propertyCode="sintetico-1", operation="sale", municipality="Madrid",
             price=450000, description="Piso con terraza, aire acondicionado, armarios empotrados y trastero.",
             parkingSpace={"hasParkingSpace": True})
 
+# La inferencia y exp operan con float32. Entre macOS/ARM y Linux, este caso
+# difiere en un ULP del precio base (0,03125 €); el índice lo traslada a 0,04645 €.
+# Tolerancia solo para fixtures entre plataformas, aproximadamente dos ULP.
+REFERENCE_RELATIVE_TOLERANCE = 2e-7
+
 class ValidationTests(unittest.TestCase):
     def test_strict_inputs(self):
         for changes in ({"latitude": None}, {"latitude": float("nan")}, {"latitude": 91},
@@ -57,7 +62,9 @@ class IntegrationTests(unittest.TestCase):
                                          {**BASE, "propertyCode": "no-price", "price": None}])
         self.assertEqual(len({r["precio_estimado"] for r in result}), 1)
         self.assertIsNone(result[2]["brecha_pct"])
-        self.assertAlmostEqual(result[0]["precio_estimado"], 482507.2956710526, places=3)
+        expected_sale = 482507.2956710526
+        self.assertAlmostEqual(result[0]["precio_estimado"], expected_sale,
+                               delta=expected_sale * REFERENCE_RELATIVE_TOLERANCE)
 
     def test_rental_compares_monthly_amounts_and_preserves_sale_estimate(self):
         rental = {**BASE, "propertyCode": "rent", "operation": "rent", "price": 1500}
@@ -71,7 +78,9 @@ class IntegrationTests(unittest.TestCase):
         self.assertEqual(rent["unidad_comparacion"], "EUR/mes")
         self.assertEqual(len({r["precio_estimado"] for r in result}), 1)
         self.assertEqual(rent["precio_comparacion"], rent["renta_mensual_estimada"])
-        self.assertAlmostEqual(rent["precio_comparacion"], 1362.4487843552, places=5)
+        expected_rent = 1362.4487843552
+        self.assertAlmostEqual(rent["precio_comparacion"], expected_rent,
+                               delta=expected_rent * REFERENCE_RELATIVE_TOLERANCE)
         self.assertAlmostEqual(rent["brecha_pct"], (1500 / rent["renta_mensual_estimada"] - 1) * 100)
         self.assertGreater(high["brecha_pct"], 60)
         self.assertIsNone(missing["brecha_pct"])

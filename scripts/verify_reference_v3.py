@@ -8,9 +8,12 @@ import hashlib
 import importlib
 import json
 from pathlib import Path
+import platform
 import sys
 
+import numpy as np
 import pandas as pd
+import xgboost
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -92,7 +95,11 @@ def main():
               "diferencia_maxima_nativa_eur": 0.0,
               "diferencia_maxima_runtime_eur": float(max_runtime_diff),
               "tolerancia_serializacion_runtime_eur": 1e-8,
-              "precision_predictiva_evaluada": False}
+              "precision_predictiva_evaluada": False,
+              "entorno": {"sistema": platform.system(), "arquitectura": platform.machine(),
+                          "python": platform.python_version(), "numpy": np.__version__,
+                          "xgboost": xgboost.__version__},
+              "alcance_numerico": "Referencia e integración comparadas en el mismo entorno; los últimos bits float32 pueden variar entre CPU y bibliotecas numéricas de distintas plataformas."}
     encoded = json.dumps(result, ensure_ascii=False, indent=2) + "\n"
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)

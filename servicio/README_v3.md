@@ -62,7 +62,9 @@ docker build -f servicio/Dockerfile.v3 -t habitia-valoracion:v3 .
 docker run --rm -p 8000:8000 -e VALORACION_TOKEN habitia-valoracion:v3
 ```
 
-El [README del repositorio](../README.md#verificación) documenta la igualdad de resultados entre la implementación de referencia y el servicio en 131 anuncios sintéticos de los polígonos y 21 casos límite (152 en total). Las pruebas verifican autenticación, lotes mixtos de venta y alquiler, comparación de mensualidades, errores, dominios y ausencia del precio anunciado entre los predictores. Las 13 pruebas también verifican obra nueva, nuevas abstenciones, negaciones e integridad de instalación. No recalculan métricas de test.
+El [README del repositorio](../README.md#verificación) documenta la igualdad de resultados entre la implementación de referencia y el servicio ejecutados en el mismo entorno, en 131 anuncios sintéticos de los polígonos y 21 casos límite (152 en total). Las pruebas verifican autenticación, lotes mixtos de venta y alquiler, comparación de mensualidades, errores, dominios y ausencia del precio anunciado entre los predictores. Las 13 pruebas también verifican obra nueva, nuevas abstenciones, negaciones e integridad de instalación. No recalculan métricas de test.
+
+Los cálculos float32 pueden variar en sus últimos bits entre CPU y bibliotecas de distintas plataformas. Solo las dos aserciones contra importes guardados usan tolerancia relativa `2e-7`; el caso de 80 m² difirió entre macOS y Linux en 0,046444 € de venta y 0,000131 €/mes de renta, un ULP del precio base propagado por los factores. La paridad exacta con la referencia se verifica dentro del mismo proceso/entorno, y las comprobaciones aritméticas de compra y alquiler se mantienen sin relajar.
 
 GitHub Actions descarga el paquete de la release y verifica sus hashes antes de ejecutar las 13 pruebas. La memoria y los anexos describen las variables, la metodología de verificación y el alcance de la evaluación.
 

@@ -3089,5 +3089,13 @@
       "ano_renta": 2024,
       "modelo": "arboles_desplegable_ajustado"
     }
-  ]
+  ],
+  "entorno": {
+    "sistema": "Darwin",
+    "arquitectura": "arm64",
+    "python": "3.12.12",
+    "numpy": "2.5.0",
+    "xgboost": "3.4.1"
+  },
+  "alcance_numerico": "Referencia e integración comparadas en el mismo entorno; los últimos bits float32 pueden variar entre CPU y bibliotecas numéricas de distintas plataformas."
 }

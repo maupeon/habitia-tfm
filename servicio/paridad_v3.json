@@ -11,5 +11,13 @@
   "diferencia_maxima_nativa_eur": 0.0,
   "diferencia_maxima_runtime_eur": 5.820766091346741e-11,
   "tolerancia_serializacion_runtime_eur": 1e-08,
-  "precision_predictiva_evaluada": false
+  "precision_predictiva_evaluada": false,
+  "entorno": {
+    "sistema": "Darwin",
+    "arquitectura": "arm64",
+    "python": "3.12.12",
+    "numpy": "2.5.0",
+    "xgboost": "3.4.1"
+  },
+  "alcance_numerico": "Referencia e integración comparadas en el mismo entorno; los últimos bits float32 pueden variar entre CPU y bibliotecas numéricas de distintas plataformas."
 }
