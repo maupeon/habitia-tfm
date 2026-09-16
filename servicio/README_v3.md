@@ -8,14 +8,14 @@ Requiere Python >=3.12 y las dependencias fijadas en `requirements_v3.txt`, incl
 python3.12 -m venv .venv-v3
 source .venv-v3/bin/activate
 python -m pip install -r servicio/requirements_v3.txt
-gh release download tfm-2026-09-16 --repo maupeon/habitia-tfm --pattern habitia-modelo-v3.zip
+curl -fL -o habitia-modelo-v3.zip https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-16/habitia-modelo-v3.zip
 python scripts/install_predictor_v3.py habitia-modelo-v3.zip
 python scripts/install_predictor_v3.py --check
 export VALORACION_TOKEN=un-token-local-propio
 python -m uvicorn servicio.api_v3:app --host 127.0.0.1 --port 8000 --workers 1
 ```
 
-El ZIP se descarga de la [release vigente del 16 de septiembre](https://github.com/maupeon/habitia-tfm/releases/tag/tfm-2026-09-16), con GitHub CLI autenticado y acceso al repositorio privado. También está en `04_modelo/` dentro de la entrega completa. Se puede instalar la carpeta recibida con `python scripts/install_predictor_v3.py ../nuevo_modelo`; también se acepta la carpeta que contiene directamente los seis artefactos. El instalador verifica todos los hashes antes de reemplazar archivos existentes. Los archivos se instalan en `servicio/artefactos_v3`; `VALORACION_ARTIFACTS_V3` permite cambiar la carpeta. En producción utiliza un token privado. La inferencia local se ejecuta con los artefactos instalados, sin consultar Idealista.
+El ZIP se descarga de la [release pública del 16 de septiembre](https://github.com/maupeon/habitia-tfm/releases/tag/tfm-2026-09-16), sin iniciar sesión en GitHub. También está en `04_modelo/` dentro de la entrega completa. Se puede instalar la carpeta recibida con `python scripts/install_predictor_v3.py ../nuevo_modelo`; también se acepta la carpeta que contiene directamente los seis artefactos. El instalador verifica todos los hashes antes de reemplazar archivos existentes. Los archivos se instalan en `servicio/artefactos_v3`; `VALORACION_ARTIFACTS_V3` permite cambiar la carpeta. En producción utiliza un token privado. La inferencia local se ejecuta con los artefactos instalados, sin consultar Idealista.
 
 ## Petición y respuesta
 
