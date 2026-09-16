@@ -1,7 +1,7 @@
 """
-Extracción de amenities desde el texto libre `description` de la API de idealista.
+Extracción de instalaciones desde el texto libre `description` de la API de idealista.
 
-La API permite filtrar por varias amenities pero no las devuelve en la respuesta, así
+La API permite filtrar por varias instalaciones pero no las devuelve en la respuesta, así
 que se reconstruyen leyendo la descripción del anuncio. Criterio: son rasgos que suman
 valor, así que quien los tiene tiende a mencionarlos -- lo no mencionado se toma como
 ausente (`False`).
@@ -158,7 +158,7 @@ def aplicar(df: pd.DataFrame, columna: str = "description",
     """
     Dos columnas booleanas por amenity: `X` (mencionado) y `X_negado` (negado
     explícitamente), más `sin_descripcion` para identificar los anuncios sin texto, en los
-    que todas las amenities quedan a False.
+    que todas las instalaciones quedan a False.
     """
     extraido: list[dict[str, dict]] = [extraer_amenidades(x, reglas) for x in df[columna]]
     columnas = {}

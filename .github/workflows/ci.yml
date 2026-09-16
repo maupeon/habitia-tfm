@@ -19,8 +19,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          # Los pesos son los mismos; esta release estable permite validar nuevas revisiones.
-          gh release download tfm-2026-09-14 --pattern habitia-modelo-v3.zip
+          # Paquete de 410 árboles exportado el 15/09/2026; hashes en el manifiesto.
+          gh release download tfm-2026-09-16 --pattern habitia-modelo-v3.zip
           python scripts/install_predictor_v3.py habitia-modelo-v3.zip
           python scripts/install_predictor_v3.py --check
       - name: Probar validación e inferencia de compra y alquiler

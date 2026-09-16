@@ -12,7 +12,7 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError
 from .predictor import PredictorHabitia, RUTA_PAQUETE
 
 MODEL_ID = "habitIA-xgboost-2018-v3"
-MODEL_VERSION = "3.1.0"
+MODEL_VERSION = "3.2.0"
 MANIFEST = Path(__file__).resolve().parents[1] / "servicio" / "manifiesto_v3.json"
 WARNINGS = [
     "Estimación de precio anunciado con datos de 2018, indexada a 2025. Precisión actual no validada.",
@@ -48,6 +48,7 @@ class Anuncio(StrictRecord):
     longitude: float | None = None
     floor: str | None = Field(default=None, max_length=20)
     hasLift: bool | None = None
+    newDevelopment: bool | None = None
     description: str | None = Field(default=None, max_length=12000)
     detailedType: DetailedType | None = None
     parkingSpace: ParkingSpace | None = None
@@ -63,6 +64,11 @@ class RuntimePredictor:
         self.predictor = PredictorHabitia.cargar(directory)
         self.predictor.modelo.set_params(n_jobs=1)
         self.meta = self.predictor.metadatos
+        if self.manifest["model_version"] != MODEL_VERSION:
+            raise ValueError("Versión distinta entre contrato y manifiesto")
+        if (self.meta["exportado"] != self.manifest["source_exported_at"]
+                or self.predictor.modelo.get_booster().num_boosted_rounds() != self.manifest["trees"]):
+            raise ValueError("Exportación o número de árboles incompatible con el manifiesto")
         if (self.meta["ano_base"], self.meta["ano_precio"], self.meta["ano_renta"]) != (2018, 2025, 2024):
             raise ValueError("Periodos incompatibles con el contrato v3")
         if self.predictor.modelo.get_booster().feature_names != self.predictor.columnas:
@@ -76,6 +82,8 @@ class RuntimePredictor:
                 "objetivo": "precio_anunciado", "precision_actual_validada": False,
                 "intervalos_disponibles": False, "alquiler_validado": False,
                 "modelo_sha256": self.manifest["sha256"]["modelo.json"],
+                "exportado": self.meta["exportado"], "entrenado": self.meta["entrenado"],
+                "version_paquete": self.meta["version_paquete"], "arboles": self.manifest["trees"],
                 "metricas_test_declaradas": self.meta["metricas_test"]}
 
     @staticmethod
@@ -122,8 +130,10 @@ class RuntimePredictor:
             price = row["precio_estimado"]
             if not row["valido"] or not isinstance(price, (int, float)) or not math.isfinite(price) or price <= 0:
                 reason = row["motivo_no_valido"] or "No se pudo obtener una estimación finita."
+                domain_reasons = {"fuera_de_madrid", "tipologia_casa", "superficie_fuera_de_dominio",
+                                  "a_reformar", "ocupada", "operacion_no_admitida"}
                 errors.append({"indice": i, "propertyCode": data["propertyCode"],
-                               "estado": "fuera_ambito" if "fuera" in reason or "tipologia" in reason else "datos_insuficientes",
+                               "estado": "fuera_ambito" if domain_reasons.intersection(reason.split(";")) else "datos_insuficientes",
                                "detalle": reason})
                 continue
             warnings = list(WARNINGS)
@@ -132,6 +142,7 @@ class RuntimePredictor:
                 "planta_imputada": "Planta desconocida: imputada con la mediana del entrenamiento (2).",
                 "ascensor_desde_descripcion": "Ascensor inferido de la descripción al faltar el campo estructurado.",
                 "barrio_rescatado": "Barrio asignado por cercanía, hasta 500 m del polígono disponible.",
+                "obra_nueva": "Obra nueva: varias viviendas de una promoción comparten errores; cuenta la promoción una vez en agregados.",
             }
             warnings += [text for key, text in marks.items() if row[key]]
             if row["fuera_de_rango"]:

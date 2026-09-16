@@ -11,6 +11,7 @@ import pandas as pd
 
 from .amenidades_descripcion import AMENIDADES_API_NO_DEVUELVE
 from .amenidades_descripcion import aplicar as aplicar_amenidades
+from .amenidades_descripcion import normalizar
 
 
 CRS_UTM = 25830
@@ -137,6 +138,10 @@ def construir_variables(anuncios: pd.DataFrame, columnas_modelo: list[str], tabl
     if faltan:
         raise ValueError(f"variables del modelo sin construir: {sorted(faltan)}")
 
+    # Obra nueva: una promoción suele anunciar cada vivienda por separado, así que sus errores no
+    # son independientes.
+    obra_nueva = _columna(df, "newDevelopment", False).fillna(False).astype(bool)
+
     contexto = pd.DataFrame({
         "propertyCode": _columna(df, "propertyCode"),
         "precio_anunciado": pd.to_numeric(_columna(df, "price"), errors="coerce"),
@@ -147,16 +152,38 @@ def construir_variables(anuncios: pd.DataFrame, columnas_modelo: list[str], tabl
         "planta_imputada": planta.isna(),
         "ascensor_desde_descripcion": ascensor_api.isna(),
         "sin_descripcion": amenidades["sin_descripcion"],
+        "obra_nueva": obra_nueva,
     })
     return X[list(columnas_modelo)], contexto
+
+
+# Estado y ocupación, leídos de la descripción normalizada (`normalizar`: minúsculas, sin tildes).
+# Un anuncio queda marcado si menciona el patrón y no contiene en ningún punto su anulación.
+# Grupos sin captura: misma detección que el paquete, sin avisos de pandas por cada lote.
+PATRON_A_REFORMAR = (r"\b(?:a|para) (?:reformar|actualizar)\b"
+                     r"|\b(?:necesita|precisa|requiere) (?:de )?(?:una |un poco de |algo de )?(?:reforma|actualizacion)\b")
+ANULA_A_REFORMAR = (r"sin necesidad de (?:reforma|reformar|obras|actualizar)"
+                    r"|no (?:necesita|precisa|requiere) (?:de )?(?:ninguna |una )?(?:reforma|obras|actualizacion)")
+# "nuda propiedad - valoracion..." es la lista de servicios del pie de algunas agencias, no el anuncio.
+PATRON_OCUPADA = (r"\b(?:ocupad[oa]|okupad[oa]|okupas?)\b|sin posesion|nuda propiedad(?!\s*-\s*valoracion)|usufructo|renta antigua"
+                  r"|\bcon inquilin[oa]s?\b|\binquilino actual|\b(?:actualmente|se encuentra|esta|vende) alquilad[oa]\b"
+                  r"|\balquilad[oa] (?:actualmente|con contrato|hasta)\b|contrato de alquiler (?:en vigor|vigente)")
+ANULA_OCUPADA = r"libre de (?:inquilin|ocupant|cargas y ocupant)|sin inquilin|desocupad"
+
+
+def _descripcion_menciona(anuncios: pd.DataFrame, patron: str, anula: str) -> np.ndarray:
+    texto = _columna(anuncios, "description", None).map(normalizar)
+    return (texto.str.contains(patron, regex=True) & ~texto.str.contains(anula, regex=True)).to_numpy(dtype=bool)
 
 
 def motivos_fuera_de_dominio(anuncios: pd.DataFrame, X: pd.DataFrame, area_max: float) -> pd.DataFrame:
     """
     Por anuncio, las razones para no valorarlo aunque tenga todos los datos:
-    `tipologia_casa` (chalet o casa: el modelo no ve la parcela) y `superficie_fuera_de_dominio`
+    `tipologia_casa` (chalet o casa: el modelo no ve la parcela), `superficie_fuera_de_dominio`
     (superficie por encima de `area_max`, el percentil 99 de train: sin soporte y los árboles
-    no extrapolan).
+    no extrapolan), `a_reformar` (la descripción dice que está a reformar o para actualizar: el
+    modelo no ve el estado) y `ocupada` (la descripción dice que está ocupada, alquilada o sin
+    posesión: se vende con descuento que el modelo no ve). Las dos últimas salen del texto.
     """
     df = anuncios.reset_index(drop=True)
     casa = (_columna(df, "propertyType", "").isin(TIPOS_CASA)
@@ -164,6 +191,8 @@ def motivos_fuera_de_dominio(anuncios: pd.DataFrame, X: pd.DataFrame, area_max: 
     return pd.DataFrame({
         "tipologia_casa": casa.to_numpy(dtype=bool),
         "superficie_fuera_de_dominio": (X["CONSTRUCTEDAREA"] > area_max).to_numpy(dtype=bool),
+        "a_reformar": _descripcion_menciona(df, PATRON_A_REFORMAR, ANULA_A_REFORMAR),
+        "ocupada": _descripcion_menciona(df, PATRON_OCUPADA, ANULA_OCUPADA),
     }, index=X.index)
 
 

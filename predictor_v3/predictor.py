@@ -29,7 +29,7 @@ COLUMNAS_SALIDA = ["propertyCode", "propertyType", "valido", "motivo_no_valido",
                    "precio_anunciado", "precio_estimado_base", "indice_venta", "precio_estimado",
                    "factor_renta_mensual", "renta_mensual_estimada", "anunciado_sobre_estimado", "fuera_de_rango",
                    "barrio_rescatado", "planta_imputada", "ascensor_desde_descripcion", "sin_descripcion",
-                   "ano_base", "ano_precio", "ano_renta", "modelo"]
+                   "obra_nueva", "ano_base", "ano_precio", "ano_renta", "modelo"]
 
 
 def leer_anuncios(anuncios) -> pd.DataFrame:
@@ -136,7 +136,8 @@ class PredictorHabitia:
         salida.loc[~valido, estimaciones] = np.nan
 
         salida["fuera_de_rango"] = [";".join(fuera.columns[fila]) or None for fila in fuera.to_numpy(dtype=bool)]
-        for marca in ["barrio_rescatado", "planta_imputada", "ascensor_desde_descripcion", "sin_descripcion"]:
+        for marca in ["barrio_rescatado", "planta_imputada", "ascensor_desde_descripcion", "sin_descripcion",
+                      "obra_nueva"]:
             salida[marca] = contexto[marca].to_numpy()
         salida["ano_base"] = self.metadatos["ano_base"]
         salida["ano_precio"] = self.metadatos["ano_precio"]

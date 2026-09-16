@@ -1,19 +1,22 @@
 {
   "model_id": "habitIA-xgboost-2018-v3",
-  "model_version": "3.0.0",
-  "source_package": "habitia_predictor version_paquete 3 exportado 2026-09-13T19:19:48",
+  "model_version": "3.2.0",
+  "source_package": "nuevo_modelo version_paquete 3 exportado 2026-09-15T22:56:50",
   "sha256": {
-    "variables_barrio.parquet": "a6d333f6a2282fbf7542767db568f5b3e6cd4229c8169dc489f79e0fc74a963c",
+    "variables_barrio.parquet": "4a5d3dea9e804f21196eb9c4d3ed7ad5114e7c3e8f2cd9ea366779deb6918469",
     "barrios.parquet": "4a6fa529722ec3f4aa0bae6b652e85e9de226806354bc708674b9c58812fa729",
-    "indices_distrito.parquet": "6012e1eaff08bcfea2e728e7a3f4189635131386203c82c55b0df0b66458cde8",
-    "modelo.json": "5d29cd26889cc0777196f592aa9828b18cc7d71ccd1a05ee61a95f0a44741a04",
+    "indices_distrito.parquet": "535ea99424df6e20735c67cb010153cf5713a4db0199c58375d2e7115c013379",
+    "modelo.json": "e5526aca6001741f24eb976dbd9607df131b3822b5b5a01b66c6c92af2a9d748",
     "pois.parquet": "ef99f3e59ee22ebec4d0e7b8154010ad60cf8c48891686c1799f675af8033322",
-    "metadatos.json": "5da4831292ca56aad3d9054f9a64f4e1ce73bb87345b8e7056ec2f134c2f1e87"
+    "metadatos.json": "64befffab61e4e9195e10108ce2da14df92698ed50ba762f753b438baaf42032"
   },
   "source_code_sha256": {
-    "amenidades_descripcion.py": "dcda0c52d0135c0ea1709fd6750561a71ce9decbae1d48d2cde3fbe1deecf336",
-    "predictor.py": "dcd450968407856a3f7e869c21975b8443b745e77c8aef301b32dcb89e6b17a3",
-    "produccion.py": "dd52d7e33ca880a46420cdebb8643537239cac1783321e520c1c1dc68f1f9fef",
-    "__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-  }
+    "__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "amenidades_descripcion.py": "33dc43948711b1c4de8e95f324539b704439d38f7d9ac03f2009d16d4781ba34",
+    "predictor.py": "2058942054affb124fc932146798184fc328f0598400c53be2c71befde2c8e2a",
+    "produccion.py": "a5ea12bfee2a92dfcd010b35009529d4835f0c89f149d1f28dfd3b4c369589ff",
+    "rutas.py": "1504ca3067fa02bb63a324a183d3acd8255e92344bb4563e8e7d34268ee5387f"
+  },
+  "source_exported_at": "2026-09-15T22:56:50",
+  "trees": 410
 }

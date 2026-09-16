@@ -1,4 +1,4 @@
-# Inferencia XGBoost recibida el 13/09/2026. Python >=3.12.
+# Inferencia XGBoost recibida el 16/09/2026 (exportación 15/09/2026, 410 árboles). Python >=3.12.
 numpy==2.5.0
 pandas==3.0.0
 pyarrow==24.0.0

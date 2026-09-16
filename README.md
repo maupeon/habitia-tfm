@@ -8,17 +8,17 @@ Este repositorio contiene el predictor XGBoost integrado, la API Python, su inst
 
 ## Entrega
 
-La [entrega esencial del 15 de septiembre de 2026](https://github.com/maupeon/habitia-tfm/releases/tag/tfm-2026-09-15-r2) contiene:
+La [entrega actualizada del 16 de septiembre de 2026](https://github.com/maupeon/habitia-tfm/releases/tag/tfm-2026-09-16) contiene:
 
-- Memoria en PDF y Word: 21 páginas totales, 19 de contenido incluida la bibliografía, con portada UCM.
-- Anexos en PDF y Word: 15 páginas con datos del modelo, contrato y reproducción de la inferencia.
+- Memoria en PDF y Word, con portada UCM y resultados del nuevo modelo.
+- Anexos en PDF y Word con datos del modelo, contrato y reproducción de la inferencia.
 - `03_codigo/`: copias de los repositorios de la aplicación y del predictor integrado.
 - `04_modelo/habitia-modelo-v3.zip`: los seis artefactos necesarios para ejecutar el modelo.
 - Instrucciones, versiones y sumas SHA-256.
 
-**[Descargar el ZIP completo](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-15-r2/HabitIA_TFM_2026-09-14.zip)** · [Memoria PDF](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-15-r2/01_HabitIA_memoria.pdf) · [Anexos PDF](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-15-r2/02_HabitIA_anexos.pdf)
+**[Descargar el ZIP completo](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-16/HabitIA_TFM_2026-09-16.zip)** · [Memoria PDF](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-16/01_HabitIA_memoria.pdf) · [Anexos PDF](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-16/02_HabitIA_anexos.pdf)
 
-Los repositorios y las releases son privados. El ZIP permite revisar el código sin acceso a GitHub. `VERSIONES.json` identifica los commits incluidos y `SHA256SUMS.txt` verifica los archivos. El nombre del ZIP conserva la fecha de la primera versión documental; la revisión vigente se identifica en VERSIONES.json.
+Los repositorios y las releases son privados. El ZIP permite revisar el código sin acceso a GitHub. `VERSIONES.json` identifica los commits incluidos y `SHA256SUMS.txt` verifica los archivos. La revisión vigente se identifica en VERSIONES.json.
 
 [Aplicación](https://habitiaucm.vercel.app) · [Presentación web](https://habitiaucm.vercel.app/presentacion) · [Repositorio web](https://github.com/maupeon/agente-inmobiliario)
 
@@ -35,7 +35,7 @@ La carpeta `.github/` contiene la automatización de las pruebas y la construcci
 
 ## Ejecutar el modelo
 
-Requisitos: Python 3.12 o superior y `libomp` en macOS o `libgomp1` en Linux. Extraer `03_codigo/habitia-tfm.zip` y abrir una terminal en la carpeta `habitia-tfm`. El instalador recibe la ruta al ZIP de `04_modelo/`.
+Requisitos: Python 3.12 o superior y `libomp` en macOS o `libgomp1` en Linux. Extraer `03_codigo/habitia-tfm.zip` y abrir una terminal en la carpeta `habitia-tfm`. El instalador recibe la ruta al ZIP de `04_modelo/`; también admite directamente la carpeta recibida `nuevo_modelo` o una carpeta con los seis artefactos.
 
 ```bash
 python3.12 -m venv .venv-v3
@@ -50,7 +50,7 @@ python -m uvicorn servicio.api_v3:app --host 127.0.0.1 --port 8000 --workers 1
 También se puede descargar el modelo con GitHub CLI autenticado:
 
 ```bash
-gh release download tfm-2026-09-15-r2 --repo maupeon/habitia-tfm --pattern habitia-modelo-v3.zip
+gh release download tfm-2026-09-16 --repo maupeon/habitia-tfm --pattern habitia-modelo-v3.zip
 ```
 
 `GET /salud` comprueba la carga del modelo. Para conectar la web, configurar `VALORACION_URL=http://127.0.0.1:8000` y el mismo `VALORACION_TOKEN` en el servidor Next.js. Utilizar una credencial privada al publicar el servicio. [Contrato de la API, ejemplo de petición y despliegue](servicio/README_v3.md).
@@ -67,22 +67,32 @@ python -m unittest discover -s tests_v3 -v
 python scripts/install_predictor_v3.py --check
 ```
 
-Las siete pruebas verifican autenticación, compra y alquiler, comparación mensual y errores de entrada y dominio. GitHub Actions instala y verifica los pesos, ejecuta las pruebas y construye el contenedor. La verificación de integración del 14 de septiembre comparó la implementación de referencia y el servicio con los mismos pesos y tablas:
+Las 13 pruebas verifican autenticación, compra y alquiler, comparación mensual, errores de entrada, nuevas abstenciones de dominio, obra nueva e instalación desde carpeta o ZIP. GitHub Actions instala y verifica los pesos de la release `tfm-2026-09-16`, ejecuta las pruebas y construye el contenedor.
+
+La comprobación del 16 de septiembre utiliza el código y los seis artefactos originales de `nuevo_modelo`, exportados el 15 de septiembre a las 22:56:50. Su informe está en [paridad_v3.json](servicio/paridad_v3.json) y se reproduce, conservando esa carpeta, con:
+
+```bash
+python scripts/verify_reference_v3.py ../nuevo_modelo --output servicio/paridad_v3.json
+```
 
 | Comprobación registrada | Resultado |
 | --- | --- |
-| Anuncios sintéticos y resultados válidos | 131 de 131 |
-| Estados coincidentes | Sí |
-| Diferencia máxima en venta base, venta indexada y renta | 0 € |
-| SHA-256 del modelo | `5d29cd26889cc0777196f592aa9828b18cc7d71ccd1a05ee61a95f0a44741a04` |
+| Anuncios sintéticos en los 131 polígonos | 131 válidos de 131 |
+| Casos límite adicionales | 21; 10 válidos y 11 abstenciones |
+| Valores de las 21 variables, estados y salidas nativas | Iguales a la referencia |
+| Diferencia máxima nativa en venta base, venta indexada y renta | 0 € |
+| Diferencia máxima tras serializar la respuesta | 5,82 × 10⁻¹¹ € (tolerancia 10⁻⁸ €) |
+| SHA-256 del modelo | `e5526aca6001741f24eb976dbd9607df131b3822b5b5a01b66c6c92af2a9d748` |
 
-Esta comprobación describe paridad funcional en casos sintéticos; no mide precisión predictiva. Las siete pruebas incluidas permiten verificar la inferencia y el contrato localmente.
+Esta comprobación describe paridad funcional en casos sintéticos; no mide precisión predictiva. Los ejemplos y el barrido de superficie de la memoria están en [evidencia_modelo_v3.json](servicio/evidencia_modelo_v3.json).
 
 ## Modelo y datos
 
-`habitIA-xgboost-2018-v3` contiene 401 árboles y 21 variables. El contrato HTTP es `3.1.0`. Estima venta de 2018 indexada a 2025 y deriva el alquiler mensual mediante ratios distritales de 2024. El dominio de la aplicación es Madrid capital, con viviendas admitidas de hasta 367 m².
+`habitIA-xgboost-2018-v3` contiene 410 árboles y 21 variables. El contrato HTTP es `3.2.0`. Estima venta de 2018 indexada a 2025 y deriva el alquiler mensual mediante ratios distritales de 2024. El dominio de la aplicación es Madrid capital, con viviendas admitidas de hasta 367 m². La exportación vigente es `2026-09-15T22:56:50`; el cambio sustituye los pesos, metadatos y tablas por los seis archivos del nuevo paquete, sin recalcular los índices. El nuevo paquete sigue usando precios de 2025 y ratios de alquiler de 2024, no índices de 2026.
 
-El MdAPE histórico del 9,29 % procede de los metadatos del entrenamiento y se presenta como resultado registrado. El alquiler no tiene entrenamiento ni validación independiente. No se ofrecen intervalos calibrados, SHAP ni una clasificación validada de oportunidad.
+Se añade abstención cuando la descripción indica vivienda a reformar/actualizar (`a_reformar`) u ocupada/alquilada/sin posesión (`ocupada`), con las negaciones y excepciones del paquete. Estas reglas se aplican también al escenario de alquiler. `newDevelopment` se devuelve como `calidad.obra_nueva` y añade una advertencia: varias viviendas de la misma promoción no son observaciones independientes. El flag no cambia el precio.
+
+El MdAPE histórico del 9,30 % procede de los metadatos del entrenamiento y se presenta como resultado registrado. El alquiler no tiene entrenamiento ni validación independiente. No se ofrecen intervalos calibrados, SHAP ni una clasificación validada de oportunidad.
 
 El histórico enriquecido documentado es `habitia_madrid_2018.parquet`: 94.852 filas, 62 columnas y 75.804 `ASSETID` distintos. Contiene `PRICE` y 18 de las 21 entradas del modelo. Faltan las columnas exactas `alq_mediana_eur_m2_barrio`, `delitos_per_10k_barrio` e `indice_vulnerabilidad`. SHA-256: `7c20dce686fb415430660167f092eb3e0ab44dae2e1221bc3db61fd94d3600ca`.
 

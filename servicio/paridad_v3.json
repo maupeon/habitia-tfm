@@ -1,0 +1,15 @@
+{
+  "model_version": "3.2.0",
+  "modelo_sha256": "e5526aca6001741f24eb976dbd9607df131b3822b5b5a01b66c6c92af2a9d748",
+  "source_exported_at": "2026-09-15T22:56:50",
+  "poligonos": 131,
+  "casos_limite": 21,
+  "total": 152,
+  "validos": 141,
+  "abstenciones": 11,
+  "matriz_y_salida_nativa_identicas": true,
+  "diferencia_maxima_nativa_eur": 0.0,
+  "diferencia_maxima_runtime_eur": 5.820766091346741e-11,
+  "tolerancia_serializacion_runtime_eur": 1e-08,
+  "precision_predictiva_evaluada": false
+}
