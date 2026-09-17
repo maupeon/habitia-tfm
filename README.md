@@ -8,6 +8,8 @@ Este repositorio contiene el predictor XGBoost integrado, la API Python, su inst
 
 ## Entrega publicada
 
+**Para subir al Campus (máximo 16 MB):** [Equipo_7_HabitIA_Campus.zip](https://github.com/maupeon/habitia-tfm/releases/download/tfm-equipo-7-final/Equipo_7_HabitIA_Campus.zip) contiene la memoria íntegra y un README con enlaces al código y los modelos. El paquete completo descrito a continuación se conserva como descarga externa.
+
 La [entrega del Equipo 7](https://github.com/maupeon/habitia-tfm/releases/tag/tfm-equipo-7-final) contiene:
 
 - Una única memoria PDF con los catorce anexos integrados: 19 páginas de contenido y bibliografía de menos de media página en la página 20; portadas, índices y anexos no computan.
