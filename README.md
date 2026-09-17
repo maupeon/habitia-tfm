@@ -2,21 +2,22 @@
 
 Aplicación de búsqueda y comparación de viviendas de **compra y alquiler en Madrid capital**, desarrollada como TFM del Máster de Big Data, Data Science e Inteligencia Artificial de la Universidad Complutense de Madrid, curso 2025–2026, clase 2.
 
-**Equipo:** Mauricio Peón García · João Paulo Nogueira Cunha · Manuel Macedo Púlido · Aldo Mauricio Ress Vilet · Tomás Perales Lara. **Tutores:** Carlos Ortega y Santiago Mota.
+**Equipo 7:** Mauricio Peón García · João Paulo Nogueira Cunha · Manuel Macedo Púlido · Aldo Mauricio Ress Vilet · Tomás Perales Lara. **Tutores:** Carlos Ortega y Santiago Mota.
 
 Este repositorio contiene el predictor XGBoost integrado, la API Python, su instalación, pruebas y configuración de despliegue.
 
 ## Entrega publicada
 
-La [entrega publicada](https://github.com/maupeon/habitia-tfm/releases/tag/tfm-2026-09-16-r3) contiene:
+La [entrega del Equipo 7](https://github.com/maupeon/habitia-tfm/releases/tag/tfm-equipo-7-final) contiene:
 
-- Memoria en PDF y Word, con portada UCM y resultados del nuevo modelo.
-- Anexos en PDF y Word con datos del modelo, formato de la API y reproducción de la inferencia.
+- Una única memoria PDF con los catorce anexos integrados: 19 páginas de contenido y bibliografía de menos de media página en la página 20; portadas, índices y anexos no computan.
+- `README.html`: acceso al documento, al código y a las instrucciones de reproducción.
 - `03_codigo/`: copias de los repositorios de la aplicación y del predictor integrado.
 - `04_modelo/habitia-modelo-v3.3.zip`: los seis artefactos necesarios para ejecutar el modelo.
-- Instrucciones, versiones y sumas SHA-256.
+- `04_modelo/habitia_predictor_original_2026.zip`: implementación de referencia para repetir la comprobación de paridad.
+- `DERECHOS_DE_USO.md`, revisiones en `VERSIONES.json` y sumas `SHA256SUMS.txt`.
 
-**[Descargar el ZIP completo](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-16-r3/HabitIA_TFM_2026-09-16-r3.zip)** · [Memoria PDF](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-16-r3/01_HabitIA_memoria.pdf) · [Anexos PDF](https://github.com/maupeon/habitia-tfm/releases/download/tfm-2026-09-16-r3/02_HabitIA_anexos.pdf)
+**[Descargar Equipo_7_HabitIA.zip](https://github.com/maupeon/habitia-tfm/releases/download/tfm-equipo-7-final/Equipo_7_HabitIA.zip)** · [Memoria y anexos PDF](https://github.com/maupeon/habitia-tfm/releases/download/tfm-equipo-7-final/HabitIA_memoria.pdf)
 
 Los repositorios y la release de entrega son públicos y se pueden consultar sin iniciar sesión en GitHub. El ZIP permite descargar el código y los artefactos para revisarlos localmente. `VERSIONES.json` identifica los commits incluidos y `SHA256SUMS.txt` verifica los archivos. La revisión vigente se identifica en VERSIONES.json.
 
@@ -50,7 +51,7 @@ python -m uvicorn servicio.api_v3:app --host 127.0.0.1 --port 8000 --workers 1
 También se puede descargar el modelo con GitHub CLI autenticado:
 
 ```bash
-gh release download tfm-2026-09-16-r3 --repo maupeon/habitia-tfm --pattern habitia-modelo-v3.3.zip
+gh release download tfm-equipo-7-final --repo maupeon/habitia-tfm --pattern habitia-modelo-v3.3.zip
 ```
 
 `GET /salud` comprueba la carga del modelo. Para conectar la web, configurar `VALORACION_URL=http://127.0.0.1:8000` y el mismo `VALORACION_TOKEN` en el servidor Next.js. Utilizar una credencial privada al publicar el servicio. [Formato de la API, ejemplo de petición y despliegue](servicio/README_v3.md).
@@ -90,7 +91,11 @@ Esta comprobación describe paridad funcional en casos sintéticos; no mide prec
 
 La igualdad exacta compara referencia e integración ejecutadas juntas en el mismo entorno. Los últimos bits de los cálculos float32 pueden variar según el procesador y las bibliotecas numéricas. La comprobación entre entornos detectó una diferencia de una unidad de precisión (ULP) del precio base (0,03125 € en el ejemplo de 80 m²), propagada por los factores del paquete. Las dos pruebas contra valores guardados admiten error relativo de `2e-7` (aproximadamente dos ULP); las comprobaciones de independencia del precio anunciado y de comparación mensual conservan sus igualdades y verificaciones aritméticas.
 
-## Preparar una nueva entrega
+## Preparar la entrega del Equipo 7
+
+El generador vigente es [scripts/build_final_delivery.py](https://github.com/maupeon/agente-inmobiliario/blob/main/scripts/build_final_delivery.py), en el repositorio web. Lee la memoria, el README Apple y las condiciones de uso de `entrega final`, toma el código de ambos repositorios con Git limpio y verifica los dos ZIP del modelo. Genera `Equipo_7_HabitIA.zip` con una única memoria PDF y los catorce anexos integrados. La paginación se comprueba al compilar la memoria; el script registra ese total con `--pdf-pages`.
+
+## Empaquetador de entregas anteriores
 
 `python scripts/build_delivery.py --help` muestra los argumentos del empaquetador. Requiere ambos repositorios con los cambios confirmados en Git, los cuatro documentos revisados, los informes publicables y la carpeta original `habitia_predictor`. Extrae el código con `git archive`, contrasta los seis artefactos y los cinco módulos originales con el manifiesto y genera `VERSIONES.json`, `SHA256SUMS.txt` y el ZIP. Incluye el paquete original para poder repetir la paridad. Rechaza una revisión ya existente y no publica archivos por sí mismo.
 
